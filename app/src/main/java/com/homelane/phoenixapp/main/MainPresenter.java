@@ -201,6 +201,13 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
             signOut();
 
             return false;
+        }else if(id == R.id.action_filter){
+            HLFragmentUtils.HLFragmentTransaction transaction =
+                    new HLFragmentUtils.HLFragmentTransaction();
+            transaction.mFrameId = R.id.fragment_frame;
+            transaction.mFragmentClass = DashboardPresenter.class;
+            push(transaction);
+
         }
 
         return super.onOptionsItemSelected(item);

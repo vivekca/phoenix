@@ -71,8 +71,8 @@ public class CustomerDashboardView implements HLView {
      */
     @Override
     public void init(LayoutInflater inflater, ViewGroup parent) {
-        mView = inflater.inflate(R.layout.customer_layout, parent, false);
-        mCustomerList = (RecyclerView)mView.findViewById(R.id.customer_list);
+        mView = inflater.inflate(R.layout.project_layout, parent, false);
+        mCustomerList = (RecyclerView)mView.findViewById(R.id.project_list);
         mCustomerList.setHasFixedSize(true);
         GridLayoutManager mLayoutManager = new GridLayoutManager(mCustomerList.getContext(),2);
         mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {

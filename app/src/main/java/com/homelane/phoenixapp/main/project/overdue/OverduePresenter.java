@@ -16,7 +16,7 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> {
     protected void onBindView() {
         super.onBindView();
 
-        ArrayList<HLObject> overdueList = getArguments().getParcelableArrayList("list");
+//        ArrayList<HLObject> overdueList = getArguments().getParcelableArrayList("list");
 
 
     }

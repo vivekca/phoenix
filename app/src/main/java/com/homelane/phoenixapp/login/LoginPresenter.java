@@ -2,11 +2,14 @@ package com.homelane.phoenixapp.login;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -19,6 +22,7 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.hl.hlcorelib.mvp.presenters.HLCoreActivityPresenter;
+import com.hl.hlcorelib.utils.HLNetworkUtils;
 import com.homelane.phoenixapp.main.MainPresenter;
 import com.homelane.phoenixapp.R;
 
@@ -35,6 +39,13 @@ public class LoginPresenter extends HLCoreActivityPresenter<LoginView> implement
     protected void onBindView() {
         super.onBindView();
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(getResources().getColor(R.color.blue_grey_900));
+        }
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -44,16 +55,32 @@ public class LoginPresenter extends HLCoreActivityPresenter<LoginView> implement
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
-        signInButton.setSize(SignInButton.SIZE_STANDARD);
-        signInButton.setScopes(gso.getScopeArray());
+        mView.mSignInButton.setSize(SignInButton.SIZE_STANDARD);
+        mView.mSignInButton.setScopes(gso.getScopeArray());
 
-        signInButton.setOnClickListener(new View.OnClickListener() {
+        mView.mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn();
+                if (HLNetworkUtils.isNetworkAvailable(LoginPresenter.this))
+                    signIn();
+                else
+                    showSnackBar();
             }
         });
+
+    }
+
+    private void showSnackBar(){
+        final Snackbar snackbar = Snackbar.make(mView.mSignInButton, "Please check your internet connection.", Snackbar.LENGTH_LONG);
+        snackbar.setAction("RETRY", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (HLNetworkUtils.isNetworkAvailable(LoginPresenter.this)) {
+                    signIn();
+                }else
+                    showSnackBar();
+            }
+        }).show();
 
     }
 

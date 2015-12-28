@@ -1,4 +1,4 @@
-package com.homelane.phoenixapp.main.project;
+package com.homelane.phoenixapp.main.project.filter;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -8,22 +8,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.hl.hlcorelib.mvp.HLView;
 import com.homelane.phoenixapp.R;
 import com.homelane.phoenixapp.views.HLProgressView;
 
 /**
- * Created by hl0395 on 16/12/15.
+ * Created by hl0395 on 28/12/15.
  */
-public class ProjectView implements HLView {
+public class FilterView implements HLView{
 
     private View mView;
-    RecyclerView mProjectList;
-    HLProgressView mProgressView;
-    TextView mErrorText;
-
     /**
      * Return the enclosing view
      *
@@ -74,13 +69,9 @@ public class ProjectView implements HLView {
      */
     @Override
     public void init(LayoutInflater inflater, ViewGroup parent) {
-        mView = inflater.inflate(R.layout.project_layout, parent, false);
-        mProjectList = (RecyclerView) mView.findViewById(R.id.project_list);
-        mProjectList.setHasFixedSize(true);
-        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(inflater.getContext());
-        mProjectList.setLayoutManager(mLayoutManager);
-        mProgressView = (HLProgressView) mView.findViewById(R.id.progress_view);
-        mErrorText = (TextView) mView.findViewById(R.id.error_display);
+        mView = inflater.inflate(R.layout.filter_layout, parent, false);
     }
+
+
 
 }

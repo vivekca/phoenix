@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.common.SignInButton;
 import com.hl.hlcorelib.mvp.HLView;
 import com.homelane.phoenixapp.R;
 
@@ -18,6 +19,7 @@ public class LoginView implements HLView {
 
     private View mView;
     public TextView mStatusTextView;
+    public SignInButton mSignInButton;
 
     /**
      * Return the enclosing view
@@ -71,6 +73,7 @@ public class LoginView implements HLView {
     public void init(LayoutInflater inflater, ViewGroup parent) {
         mView = inflater.inflate(R.layout.activity_login, parent, false);
         mStatusTextView = (TextView) mView.findViewById(R.id.status);
+        mSignInButton = (SignInButton) mView.findViewById(R.id.sign_in_button);
 
     }
 

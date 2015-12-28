@@ -1,6 +1,7 @@
 package com.homelane.phoenixapp.main.project;
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
 import com.hl.hlcorelib.mvp.events.HLEvent;
@@ -25,7 +26,17 @@ public class ProjectPresenter extends HLCoreFragment<ProjectView> implements HLE
         ProjectListAdapter mProjectListAdapter = new ProjectListAdapter();
         mProjectListAdapter.setmDataSet(projectList);
 
-        mView.mCustomerList.setAdapter(mProjectListAdapter);
+        mView.mProjectList.setAdapter(mProjectListAdapter);
+
+        if(projectList.size() > 0) {
+            mView.mProjectList.setVisibility(View.VISIBLE);
+            mView.mErrorText.setVisibility(View.GONE);
+        }else{
+            mView.mProjectList.setVisibility(View.GONE);
+            mView.mErrorText.setVisibility(View.VISIBLE);
+            mView.mErrorText.setText("No projects found.");
+        }
+
 
         if(! hasEventListener(PhoenixConstants.NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT,this))
             addEventListener(PhoenixConstants.NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT,this);

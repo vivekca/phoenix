@@ -71,8 +71,8 @@ public class OverdueView implements HLView {
      */
     @Override
     public void init(LayoutInflater inflater, ViewGroup parent) {
-        mView = inflater.inflate(R.layout.customer_layout, parent, false);
-        mOverdueList = (RecyclerView)mView.findViewById(R.id.customer_list);
+        mView = inflater.inflate(R.layout.project_layout, parent, false);
+        mOverdueList = (RecyclerView)mView.findViewById(R.id.project_list);
         mOverdueList.setHasFixedSize(true);
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(inflater.getContext());
         mOverdueList.setLayoutManager(mLayoutManager);

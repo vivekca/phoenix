@@ -3,7 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="brick_red">#e74023</color>
+    <color name="brick_red">#E94F35</color>
+    <color name="brick_red_dark">#e74023</color>
+    <color name="light_gray">#E6E6E6</color>
+
     <color name="blue_grey_500">#607D8B</color>
     <color name="blue_grey_600">#546E7A</color>
     <color name="blue_grey_700">#455A64</color>
