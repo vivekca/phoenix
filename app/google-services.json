@@ -1,0 +1,51 @@
+{
+  "project_info": {
+    "project_id": "hlphoenix-86358",
+    "project_number": "687689620223",
+    "name": "HLPhoenix"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:687689620223:android:ae812d5c25cc4fc3",
+        "client_id": "android:com.homelane.phoenixapp",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "com.homelane.phoenixapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "687689620223-gpnv8kln7m0m055umlc0rbu59vmk6hpa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.homelane.phoenixapp",
+            "certificate_hash": "BFC80424B288E356054E9D06AA40016E6A039DAF"
+          }
+        }
+      ],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "cloud_messaging_service": {
+          "status": 1,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 2
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "client_info": [],
+  "ARTIFACT_VERSION": "1"
+}

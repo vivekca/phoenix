@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_dashboard"
+            android:icon="@mipmap/ic_dashboard_black_18dp"
+            android:title="Dashboard" />
+        <item
+            android:id="@+id/nav_my_customers"
+            android:title="My Customers" />
+        <item
+            android:id="@+id/nav_all_customers"
+            android:title="All Customers" />
+        <item
+            android:id="@+id/nav_designers"
+            android:title="Designers" />
+        <item
+            android:id="@+id/nav_meetup_invite"
+            android:title="MeetUp Invite" />
+        <item
+            android:id="@+id/nav_meetup_details"
+            android:title="MeetUp Details" />
+        <item
+            android:id="@+id/nav_leas"
+            android:title="My Leads" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Send" />
+        </menu>
+    </item>
+
+</menu>

@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Mobile Phoenix</string>
+
+    <!-- Server Client ID.  This should be a valid Web OAuth 2.0 Client ID obtained
+         from https://console.developers.google.com/ -->
+    <string name="server_client_id">687689620223-gpnv8kln7m0m055umlc0rbu59vmk6hpa.apps.googleusercontent.com</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_logout">Logout</string>
+    <integer name="db_version">1</integer>
+
+    <!-- Splash Activity -->
+    <string name="phoenix_txt">MOBILE PHOENIX</string>
+    <string name="phoenix_tagline_txt">DATA TO DECISIONS</string>
+
+    <!-- Login Activity -->
+    <string name="sign_out">Sign Out</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="title_text">Google Sign-In</string>
+    <string name="signed_out">Signed out</string>
+    <string name="desc_google_icon">Google Logo</string>
+    <string name="loading">Loading</string>
+    <string name="signed_in_fmt">Signed in as: %s</string>
+
+</resources>
