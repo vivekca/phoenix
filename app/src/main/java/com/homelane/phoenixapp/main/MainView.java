@@ -10,10 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.hl.hlcorelib.mvp.HLView;
-import com.homelane.phoenixapp.views.CircleImageView;
 import com.homelane.phoenixapp.R;
 
 /**
@@ -23,8 +21,8 @@ public class MainView implements HLView {
 
     public View mView;
     public Toolbar mToolbar;
-    public DrawerLayout mDrawer;
-    public NavigationView mNavigationView;
+    public DrawerLayout mDrawerLayout;
+    public NavigationView mLeftNavigationView,mRightNavigationView;
     public TabLayout mTabLayout;
 
     /**
@@ -79,8 +77,9 @@ public class MainView implements HLView {
     public void init(LayoutInflater inflater, ViewGroup parent) {
         mView = inflater.inflate(R.layout.activity_main, parent, false);
         mToolbar = (Toolbar) mView.findViewById(R.id.toolbar);
-        mDrawer = (DrawerLayout) mView.findViewById(R.id.drawer_layout);
-        mNavigationView = (NavigationView) mView.findViewById(R.id.nav_view);
+        mDrawerLayout = (DrawerLayout) mView.findViewById(R.id.drawer_layout);
+        mLeftNavigationView = (NavigationView) mView.findViewById(R.id.nav_view);
+        mRightNavigationView = (NavigationView) mView.findViewById(R.id.nav_view1);
         mTabLayout = (TabLayout) mView.findViewById(R.id.tabs);
     }
 

@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.hl.hlcorelib.mvp.HLView;
 import com.homelane.phoenixapp.R;
@@ -19,6 +20,8 @@ import com.homelane.phoenixapp.views.HLProgressView;
 public class FilterView implements HLView{
 
     private View mView;
+    public TextView mFromDate, mToDate;
+
     /**
      * Return the enclosing view
      *
@@ -70,6 +73,8 @@ public class FilterView implements HLView{
     @Override
     public void init(LayoutInflater inflater, ViewGroup parent) {
         mView = inflater.inflate(R.layout.filter_layout, parent, false);
+        mFromDate = (TextView) mView.findViewById(R.id.start_date);
+        mToDate = (TextView) mView.findViewById(R.id.end_date);
     }
 
 

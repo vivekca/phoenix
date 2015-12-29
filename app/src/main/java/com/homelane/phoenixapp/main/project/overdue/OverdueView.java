@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.hl.hlcorelib.mvp.HLView;
 import com.homelane.phoenixapp.R;
@@ -21,6 +22,8 @@ public class OverdueView implements HLView {
     private View mView;
     RecyclerView mOverdueList;
     HLProgressView mProgressView;
+    public TextView mErrorText;
+
     /**
      * Return the enclosing view
      *
@@ -77,6 +80,9 @@ public class OverdueView implements HLView {
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(inflater.getContext());
         mOverdueList.setLayoutManager(mLayoutManager);
         mProgressView = (HLProgressView)mView.findViewById(R.id.progress_view);
+        mErrorText = (TextView) mView.findViewById(R.id.error_display);
+        mErrorText.setText("No tasks at the moment");
+        mErrorText.setVisibility(View.VISIBLE);
     }
 
 

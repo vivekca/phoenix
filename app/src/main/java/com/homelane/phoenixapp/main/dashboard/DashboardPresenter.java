@@ -1,6 +1,7 @@
 package com.homelane.phoenixapp.main.dashboard;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.view.ViewPager;
 
 import com.android.volley.Request;
@@ -53,6 +54,14 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> {
                     bundle);
             HLEventDispatcher.acquire().dispatchEvent(event);
         }
+/*
+        setupViewPager();
+        ((MainPresenter)getActivity()).getTabLayout().setupWithViewPager(mView.mViewPager);
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("list", new ArrayList<Parcelable>());
+        mProjectPresenter.setArguments(bundle);
+*/
+
 
     }
 
@@ -60,10 +69,11 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> {
     OverduePresenter mOverduePresenter = new OverduePresenter();
 
     private void setupViewPager() {
+
         ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
         adapter.addFragment(mProjectPresenter, "Projects Assigned");
         adapter.addFragment(mOverduePresenter, "Overdue Tasks");
-//        adapter.addFragment(new ProjectPresenter(), "Pending Tasks");
+        adapter.addFragment(new OverduePresenter(), "Pending Tasks");
         mView.mViewPager.setAdapter(adapter);
     }
 
@@ -85,6 +95,7 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> {
 
                         hlProject.put(PhoenixConstants.Project.PROJECT_NAME, project.getString("projectName"));
                         hlProject.put(PhoenixConstants.Project.PROJECT_LOCATION, project.getString("location"));
+                        if(project.has("state"))
                         hlProject.put(PhoenixConstants.Project.PROJECT_STATE, project.getString("state"));
                         hlProject.put(PhoenixConstants.Project.PROJECT_STATUS, project.getString("status"));
 

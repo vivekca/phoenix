@@ -29,6 +29,11 @@ public class PhoenixConstants {
         public static final String PROJECT_STATE = "ProjectState";
     }
 
+    public static final class DatePicker {
+        public static final String SELECTED_DAY = "SelectedDay";
+        public static final String SELECTED_MONTH = "SelectedMonth";
+        public static final String SELECTED_YEAR = "SelectedYear";
+    }
     /**
      * Class holds all keys against respective values in
      * configuration file.Make sure the value used against constants
@@ -45,5 +50,5 @@ public class PhoenixConstants {
     public static final String NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT ="NavigateToCustomerDashboard";
     public static final String SNACKBAR_DISPLAY_EVENT ="SnackbarDisplay";
     public static final String SNACKBAR_DISPLAY_MESSAGE ="SnackbarDisplayMessage";
-
+    public static final String SELECTED_DATE_EVENT ="SelectedDate";
 }

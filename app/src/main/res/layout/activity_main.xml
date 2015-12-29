@@ -22,4 +22,12 @@
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" />
 
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/filter_layout"
+        />
 </android.support.v4.widget.DrawerLayout>

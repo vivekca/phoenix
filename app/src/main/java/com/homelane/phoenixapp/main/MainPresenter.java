@@ -1,10 +1,19 @@
 package com.homelane.phoenixapp.main;
 
+import android.app.DialogFragment;
+import android.app.SearchManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -13,7 +22,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -30,9 +42,14 @@ import com.hl.hlcorelib.mvp.presenters.HLCoreActivityPresenter;
 import com.hl.hlcorelib.utils.HLFragmentUtils;
 import com.homelane.phoenixapp.PhoenixConstants;
 import com.homelane.phoenixapp.main.dashboard.DashboardPresenter;
+import com.homelane.phoenixapp.main.project.filter.DatePickerFragment;
 import com.homelane.phoenixapp.views.CircleImageView;
 import com.homelane.phoenixapp.R;
 import com.homelane.phoenixapp.login.LoginPresenter;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 public class MainPresenter extends HLCoreActivityPresenter<MainView>
         implements NavigationView.OnNavigationItemSelectedListener, HLEventListener {
@@ -46,11 +63,12 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         setSupportActionBar(mView.mToolbar);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mView.mDrawer, mView.mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mView.mDrawer.setDrawerListener(toggle);
+                this, mView.mDrawerLayout, mView.mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mView.mDrawerLayout.setDrawerListener(toggle);
         toggle.syncState();
 
-        setNavigationView();
+        setLeftNavigationView();
+        setRightNavigationView();
 
         final GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -73,10 +91,12 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
          transaction.mFrameId = R.id.fragment_frame;
          transaction.mFragmentClass = DashboardPresenter.class;
          push(transaction);
-        mView.mNavigationView.setCheckedItem(R.id.nav_dashboard);
+        mView.mLeftNavigationView.setCheckedItem(R.id.nav_dashboard);
 
         if(! hasEventListener(PhoenixConstants.SNACKBAR_DISPLAY_EVENT,this))
             addEventListener(PhoenixConstants.SNACKBAR_DISPLAY_EVENT,this);
+        if(! hasEventListener(PhoenixConstants.SELECTED_DATE_EVENT,this))
+            addEventListener(PhoenixConstants.SELECTED_DATE_EVENT,this);
 
     }
 
@@ -96,12 +116,30 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
     }
 
     @Override
+    protected void onDestroyHLView() {
+        super.onDestroyHLView();
+        removeEventListener(PhoenixConstants.SNACKBAR_DISPLAY_EVENT, this);
+        removeEventListener(PhoenixConstants.SELECTED_DATE_EVENT, this);
+    }
+
+    @Override
     public void onEvent(HLEvent hlEvent) {
         HLCoreEvent e = (HLCoreEvent)hlEvent;
         Bundle bundle=e.getmExtra();
 
         if(e.getType().equals(PhoenixConstants.SNACKBAR_DISPLAY_EVENT))
             showSnackBar(bundle.getString(PhoenixConstants.SNACKBAR_DISPLAY_MESSAGE));
+        else if(e.getType().equals(PhoenixConstants.SELECTED_DATE_EVENT)){
+            if(isFromDateSelected) {
+                mFromDate.setText(bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY) + "-" +
+                        bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH) + "-" +
+                                bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR));
+            }else {
+                mToDate.setText(bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY) + "-" +
+                        bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH) + "-" +
+                                bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR));
+            }
+        }
 
     }
 
@@ -128,10 +166,10 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
     /**
      * Function to the sliding navigation view
      */
-    private void setNavigationView() {
-        mView.mNavigationView.setNavigationItemSelectedListener(this);
+    private void setLeftNavigationView() {
+        mView.mLeftNavigationView.setNavigationItemSelectedListener(this);
 
-        View headerView = LayoutInflater.from(this).inflate(R.layout.nav_header_main, mView.mNavigationView);
+        View headerView = LayoutInflater.from(this).inflate(R.layout.nav_header_main, mView.mLeftNavigationView);
         CircleImageView imageView = (CircleImageView) headerView.findViewById(R.id.imageView);
         TextView userName = (TextView) headerView.findViewById(R.id.customer_name);
         TextView userEmail = (TextView) headerView.findViewById(R.id.customer_email);
@@ -141,6 +179,59 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
 
         if(LoginPresenter.mGoogleAccount.getPhotoUrl() != null)
             imageView.loadImageURL(LoginPresenter.mGoogleAccount.getPhotoUrl().toString());
+    }
+
+    boolean isFromDateSelected = true;
+    TextView mFromDate, mToDate;
+
+    private void setRightNavigationView() {
+//        mView.mLeftNavigationView.setNavigationItemSelectedListener(this);
+
+        View headerView = LayoutInflater.from(this).inflate(R.layout.filter_layout, mView.mRightNavigationView);
+        mFromDate = (TextView) headerView.findViewById(R.id.start_date);
+        mToDate = (TextView) headerView.findViewById(R.id.end_date);
+        final Calendar calendar = Calendar.getInstance();
+
+        Spinner spinner = (Spinner) headerView.findViewById(R.id.status_spinner);
+
+        ArrayList<String> spinnerItems = new ArrayList<String>();
+        spinnerItems.add("To send Initial Quote");
+        spinnerItems.add("Initial Quote Sent");
+        spinnerItems.add("Initial Quote Approved");
+        spinnerItems.add("Initial Quote - Requested For Rev");
+        spinnerItems.add("Initial Quote - Revision Sent");
+        spinnerItems.add("Initial Quote - Revision Approved");
+
+        ArrayAdapter<String> stringArrayAdapter =new ArrayAdapter<String>(
+                this,android.R.layout.simple_spinner_item,spinnerItems);
+        stringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(stringArrayAdapter);
+
+
+        mFromDate.setText(calendar.get(Calendar.DAY_OF_MONTH)+"-"+calendar.get(Calendar.MONTH)+"-"+calendar.get(Calendar.YEAR));
+        mToDate.setText(calendar.get(Calendar.DAY_OF_MONTH)+"-"+calendar.get(Calendar.MONTH)+"-"+calendar.get(Calendar.YEAR));
+
+
+        mFromDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isFromDateSelected = true;
+                DialogFragment newFragment = new DatePickerFragment();
+                newFragment.show(getFragmentManager(), MainPresenter.class.getName());
+
+            }
+        });
+
+        mToDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isFromDateSelected = false;
+                DialogFragment newFragment = new DatePickerFragment();
+                newFragment.show(getFragmentManager(), MainPresenter.class.getName());
+
+            }
+        });
+
     }
 
     @Override
@@ -154,7 +245,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
      */
     private void showSnackBar(String message){
 
-        Snackbar.make(mView.mDrawer,message,Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(mView.mDrawerLayout,message,Snackbar.LENGTH_SHORT).show();
     }
 
     boolean doubleBackToExitPressedOnce = false;
@@ -189,6 +280,25 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager
+                    .getSearchableInfo(getComponentName()));
+
+        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                return false;
+            }
+        };
+        searchView.setOnQueryTextListener(queryTextListener);
+
         return true;
     }
 
@@ -197,18 +307,10 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         int id = item.getItemId();
 
         if (id == R.id.action_logout) {
-
             signOut();
-
             return false;
-        }else if(id == R.id.action_filter){
-            HLFragmentUtils.HLFragmentTransaction transaction =
-                    new HLFragmentUtils.HLFragmentTransaction();
-            transaction.mFrameId = R.id.fragment_frame;
-            transaction.mFragmentClass = DashboardPresenter.class;
-            push(transaction);
-
-        }
+        }else if(id == R.id.action_filter)
+            mView.mDrawerLayout.openDrawer(GravityCompat.END);
 
         return super.onOptionsItemSelected(item);
     }
@@ -228,27 +330,62 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
                 });
     }
 
+    public String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.startsWith(manufacturer)) {
+            return capitalize(model);
+        } else {
+            return capitalize(manufacturer) + " " + model;
+        }
+    }
+
+
+    private String capitalize(String s) {
+        if (s == null || s.length() == 0) {
+            return "";
+        }
+        char first = s.charAt(0);
+        if (Character.isUpperCase(first)) {
+            return s;
+        } else {
+            return Character.toUpperCase(first) + s.substring(1);
+        }
+    }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-//        if (id == R.id.nav_camera) {
-//            // Handle the camera action
-//        } else if (id == R.id.nav_gallery) {
-//
-//        } else if (id == R.id.nav_slideshow) {
-//
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//        }
+        if (id == R.id.nav_share)
+            openGmailApp();
 
-        mView.mDrawer.closeDrawer(GravityCompat.START);
+
+        mView.mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void openGmailApp(){
+        Spanned text = Html.fromHtml("Android OS Version: "+android.os.Build.VERSION.SDK_INT+"<br>"+
+                "Device Information: "+getDeviceName()+"<br>");
+
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{ "rajesh.c@homelane.com,vivek.c@homelane.com," +
+                "sunil.a@homelane.com","bhanuprasad.m@homelane.com","vinith.k@homelane.com"});
+        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Feedback for Mobile Phoenix app");
+        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, text);
+        emailIntent.setType("text/plain");
+        final PackageManager pm = getPackageManager();
+        final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
+        ResolveInfo best = null;
+        for(final ResolveInfo info : matches)
+            if (info.activityInfo.packageName.endsWith(".gm") || info.activityInfo.name.toLowerCase().contains("gmail"))
+                best = info;
+        if (best != null)
+            emailIntent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
+        startActivity(emailIntent);
+
     }
 }

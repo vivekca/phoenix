@@ -4,6 +4,13 @@
 
     <item
         android:title="@string/action_logout"
+        android:id="@+id/action_search"
+        android:icon="@mipmap/ic_search_white_24dp"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always" />
+
+    <item
+        android:title="@string/action_logout"
         android:id="@+id/action_filter"
         android:icon="@mipmap/ic_filter_list_white_36dp"
         app:showAsAction="always" />
