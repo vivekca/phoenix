@@ -34,19 +34,12 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
         return new ProjectFilter();
     }
 
-
-
-
-
-
     private class ProjectFilter extends android.widget.Filter {
         private ProjectFilter() {
         }
 
         protected FilterResults performFiltering(CharSequence query) {
             FilterResults results = new FilterResults();
-
-
 
                 if (query.length() == 0) {
                     results.values = OverdueListAdapter.this.mDataSet;
@@ -71,12 +64,17 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
             String string =(String)query;
             boolean flag= string.contains("/");
             if(flag == false) {
-            if (project.getString(PhoenixConstants.Task.TASK_NAME).trim().toLowerCase().contains(query) || project.getString(PhoenixConstants.Task.START_DATE).toLowerCase().contains(query) || project.getString(PhoenixConstants.Task.TASK_STATUS).toLowerCase().contains(query)) {
-                return true;
-            }
+                if (project.getString(PhoenixConstants.Task.TASK_NAME).trim().toLowerCase().contains(query) ||
+                        project.getString(PhoenixConstants.Task.START_DATE).toLowerCase().contains(query) ||
+                        project.getString(PhoenixConstants.Task.TASK_STATUS).toLowerCase().contains(query)) {
+                    return true;
+                }
             }else {
                 String k[]=string.split("/");
-                if(project.getString(PhoenixConstants.Task.TASK_NAME).trim().toLowerCase().contains(k[0].toLowerCase().trim()) || project.getString(PhoenixConstants.Task.START_DATE).trim().contains(k[1] )||project.getString(PhoenixConstants.Task.TO_DATE).trim().contains(k[2]))
+                if(project.getString(PhoenixConstants.Task.TASK_NAME).trim().toLowerCase().
+                        contains(k[0].toLowerCase().trim()) ||
+                        project.getString(PhoenixConstants.Task.START_DATE).trim().contains(k[1] )||
+                        project.getString(PhoenixConstants.Task.TO_DATE).trim().contains(k[2]))
                 return true;
             }
 

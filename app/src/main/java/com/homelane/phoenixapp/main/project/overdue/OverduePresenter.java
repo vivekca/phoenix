@@ -9,6 +9,7 @@ import com.hl.hlcorelib.mvp.events.HLEventListener;
 import com.hl.hlcorelib.mvp.presenters.HLCoreFragment;
 import com.hl.hlcorelib.orm.HLObject;
 import com.homelane.phoenixapp.PhoenixConstants;
+import com.homelane.phoenixapp.R;
 import com.homelane.phoenixapp.SearchEvent;
 
 import java.util.ArrayList;
@@ -106,7 +107,10 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> implements HLE
                 this.mOverDueListAdapter.getFilter().filter(
                         searchEvent.getmExtra().getString("android.intent.action.SEARCH"));
             }
-        }else if(e.getType().equals(PhoenixConstants.FILTER_EVENT)){
+        }
+
+/*
+        else if(e.getType().equals(PhoenixConstants.FILTER_EVENT)){
             HLObject task = bundle.getParcelable(PhoenixConstants.Task.FILTER);
 
             if(task.getString(PhoenixConstants.Task.START_DATE) != "Select the Date" &&
@@ -120,10 +124,22 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> implements HLE
                 String status = task.getString(PhoenixConstants.Task.TASK_NAME) + "/" ;
                 this.mOverDueListAdapter.getFilter().filter(status);
             }
-
-
         }
+*/
+    }
 
+    public void filterList(HLObject filterObj){
+        if(!filterObj.getString(PhoenixConstants.Task.START_DATE).equals(getString(R.string.select_date)) &&
+                !filterObj.getString(PhoenixConstants.Task.TO_DATE).equals(getString(R.string.select_date))) {
+
+            String status = filterObj.getString(PhoenixConstants.Task.TASK_NAME) + "/" +
+                    filterObj.getString(PhoenixConstants.Task.START_DATE) + "/" +
+                    filterObj.getString(PhoenixConstants.Task.TO_DATE);
+            this.mOverDueListAdapter.getFilter().filter(status);
+        }else{
+            String status = filterObj.getString(PhoenixConstants.Task.TASK_NAME) + "/" ;
+            this.mOverDueListAdapter.getFilter().filter(status);
+        }
 
     }
 
