@@ -1,9 +1,9 @@
-package com.homelane.phoenixapp.main.project.dashboard;
+package com.homelane.phoenixapp.main.project.customer;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +16,7 @@ import com.homelane.phoenixapp.views.HLProgressView;
 /**
  * Created by hl0395 on 21/12/15.
  */
-public class CustomerDashboardView implements HLView {
+public class CustomerView implements HLView {
 
     private View mView;
     RecyclerView mCustomerList;
@@ -74,16 +74,7 @@ public class CustomerDashboardView implements HLView {
         mView = inflater.inflate(R.layout.project_layout, parent, false);
         mCustomerList = (RecyclerView)mView.findViewById(R.id.project_list);
         mCustomerList.setHasFixedSize(true);
-        GridLayoutManager mLayoutManager = new GridLayoutManager(mCustomerList.getContext(),2);
-        mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if(position == 0)
-                    return 2;
-                else
-                    return 1;
-            }
-        });
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(mCustomerList.getContext());
         mCustomerList.setLayoutManager(mLayoutManager);
         mProgressView = (HLProgressView)mView.findViewById(R.id.progress_view);
     }

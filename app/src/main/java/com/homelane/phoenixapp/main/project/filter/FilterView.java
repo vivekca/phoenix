@@ -3,8 +3,6 @@ package com.homelane.phoenixapp.main.project.filter;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +10,6 @@ import android.widget.TextView;
 
 import com.hl.hlcorelib.mvp.HLView;
 import com.homelane.phoenixapp.R;
-import com.homelane.phoenixapp.views.HLProgressView;
 
 /**
  * Created by hl0395 on 28/12/15.

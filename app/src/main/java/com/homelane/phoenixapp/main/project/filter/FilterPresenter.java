@@ -3,10 +3,8 @@ package com.homelane.phoenixapp.main.project.filter;
 import android.app.DialogFragment;
 import android.view.View;
 
-import com.hl.hlcorelib.mvp.presenters.HLCoreFragment;
 import com.hl.hlcorelib.mvp.presenters.HLCoreFragmentDialogPresenter;
 import com.homelane.phoenixapp.main.MainPresenter;
-import com.homelane.phoenixapp.main.project.overdue.OverdueView;
 
 import java.util.Calendar;
 

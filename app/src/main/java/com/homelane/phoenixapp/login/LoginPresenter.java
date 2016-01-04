@@ -23,8 +23,8 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.hl.hlcorelib.mvp.presenters.HLCoreActivityPresenter;
 import com.hl.hlcorelib.utils.HLNetworkUtils;
-import com.homelane.phoenixapp.main.MainPresenter;
 import com.homelane.phoenixapp.R;
+import com.homelane.phoenixapp.main.MainPresenter;
 
 public class LoginPresenter extends HLCoreActivityPresenter<LoginView> implements
         GoogleApiClient.OnConnectionFailedListener{

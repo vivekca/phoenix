@@ -188,7 +188,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         holder.mCustomerMobile.setText(customer.getString(PhoenixConstants.Project.PROJECT_STATE));
         holder.mCustomerStatus.setText(customer.getString(PhoenixConstants.Project.PROJECT_STATUS));
 
-//        holder.mCustomerName.setOnClickListener(new View.OnClickListener() {
+//        holder.mDesignerName.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
 //                HLCoreEvent event = new HLCoreEvent(PhoenixConstants.NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT,

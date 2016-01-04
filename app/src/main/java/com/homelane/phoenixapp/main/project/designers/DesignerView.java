@@ -1,24 +1,26 @@
-package com.homelane.phoenixapp.main.dashboard;
+package com.homelane.phoenixapp.main.project.designers;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.hl.hlcorelib.mvp.HLView;
 import com.homelane.phoenixapp.R;
+import com.homelane.phoenixapp.views.HLProgressView;
 
 /**
- * Created by hl0395 on 16/12/15.
+ * Created by hl0395 on 21/12/15.
  */
-public class DashboardView implements HLView {
+public class DesignerView implements HLView {
 
     private View mView;
-    public ViewPager mViewPager;
-
+    RecyclerView mCustomerList;
+    HLProgressView mProgressView;
     /**
      * Return the enclosing view
      *
@@ -69,8 +71,12 @@ public class DashboardView implements HLView {
      */
     @Override
     public void init(LayoutInflater inflater, ViewGroup parent) {
-        mView = inflater.inflate(R.layout.dashboard_layout, parent, false);
-        mViewPager = (ViewPager) mView.findViewById(R.id.viewpager);
+        mView = inflater.inflate(R.layout.project_layout, parent, false);
+        mCustomerList = (RecyclerView)mView.findViewById(R.id.project_list);
+        mCustomerList.setHasFixedSize(true);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(mCustomerList.getContext());
+        mCustomerList.setLayoutManager(mLayoutManager);
+        mProgressView = (HLProgressView)mView.findViewById(R.id.progress_view);
     }
 
 }

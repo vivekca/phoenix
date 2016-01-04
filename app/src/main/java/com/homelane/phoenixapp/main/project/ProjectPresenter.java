@@ -5,7 +5,6 @@ import android.view.View;
 
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
 import com.hl.hlcorelib.mvp.events.HLEvent;
-import com.hl.hlcorelib.mvp.events.HLEventDispatcher;
 import com.hl.hlcorelib.mvp.events.HLEventListener;
 import com.hl.hlcorelib.mvp.presenters.HLCoreFragment;
 import com.hl.hlcorelib.orm.HLObject;
@@ -99,7 +98,7 @@ public class ProjectPresenter extends HLCoreFragment<ProjectView> implements HLE
 //            HLFragmentUtils.HLFragmentTransaction transaction =
 //                    new HLFragmentUtils.HLFragmentTransaction();
 //            transaction.mFrameId = R.id.fragment_frame;
-//            transaction.mFragmentClass = CustomerDashboardPresenter.class;
+//            transaction.mFragmentClass = DesignerPresenter.class;
 //            push(transaction);
         } else if (e.getType().equals(PhoenixConstants.SEARCH_EVENT)) {
             SearchEvent searchEvent = (SearchEvent) hlEvent;

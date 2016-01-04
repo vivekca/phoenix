@@ -1,8 +1,6 @@
 package com.homelane.phoenixapp.main.dashboard;
 
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.v4.view.ViewPager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -65,12 +63,17 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> {
 
     }
 
-    ProjectPresenter mProjectPresenter = new ProjectPresenter();
-    OverduePresenter mOverduePresenter = new OverduePresenter();
+    ProjectPresenter mProjectPresenter;
+    OverduePresenter mOverduePresenter;
 
+    /**
+     * Function to create view pager adapter and set it to the view pager.
+     * getChildFragmentManager() is used because, it has to recreate when the parent fragment
+     * is created.
+     */
     private void setupViewPager() {
 
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFragment(mProjectPresenter, "Projects Assigned");
         adapter.addFragment(mOverduePresenter, "Overdue Tasks");
         adapter.addFragment(new OverduePresenter(), "Pending Tasks");
@@ -78,6 +81,9 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> {
     }
 
     private void getProjectList(){
+        mProjectPresenter = new ProjectPresenter();
+        mOverduePresenter = new OverduePresenter();
+
         final String baseUrl = HLCoreLib.readProperty(PhoenixConstants.AppConfig.HL_PROJECT_DETAILS_URL);
 
         StringRequest request = new StringRequest(Request.Method.GET, baseUrl, new Response.Listener<String>() {
