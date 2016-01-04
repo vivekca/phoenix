@@ -1,6 +1,7 @@
-package com.homelane.phoenixapp.main.project.dashboard;
+package com.homelane.phoenixapp.main.project.customer;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Created by hl0395 on 21/12/15.
  */
-public class CustomerDashboardListAdapter extends RecyclerView.Adapter<CustomerDashboardListAdapter.ViewHolder> {
+public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapter.ViewHolder> {
 
 
     /**
@@ -32,15 +33,8 @@ public class CustomerDashboardListAdapter extends RecyclerView.Adapter<CustomerD
 
         public TextView mCustomerName;
         public TextView mCustomerEmail;
-        public TextView mQuoteAmt;
-        public TextView mInitialQuoteAmt;
-        public TextView mFinalQuoteAmt;
-        public TextView mCollectedAmt;
-        public TextView mFollowUp;
-
-        public TextView mNextTask;
-        public TextView mCompletedTask;
-
+        public TextView mCustomerMobile;
+        public TextView mCustomerProjectStatus;
 
         /**
          * @param itemView
@@ -49,14 +43,8 @@ public class CustomerDashboardListAdapter extends RecyclerView.Adapter<CustomerD
             super(itemView);
             mCustomerName = (TextView)itemView.findViewById(R.id.customer_name);
             mCustomerEmail = (TextView)itemView.findViewById(R.id.customer_email);
-            mQuoteAmt = (TextView)itemView.findViewById(R.id.customer_quote_amt);
-            mInitialQuoteAmt = (TextView)itemView.findViewById(R.id.customer_initial_quote_amt);
-            mFinalQuoteAmt = (TextView)itemView.findViewById(R.id.customer_final_quote_amt);
-            mCollectedAmt = (TextView)itemView.findViewById(R.id.customer_collected_amt);
-            mFollowUp = (TextView)itemView.findViewById(R.id.customer_follow_update);
-
-            mNextTask = (TextView)itemView.findViewById(R.id.next_task_value);
-            mCompletedTask = (TextView)itemView.findViewById(R.id.completed_task_value);
+            mCustomerMobile = (TextView)itemView.findViewById(R.id.customer_mobile);
+            mCustomerProjectStatus = (TextView)itemView.findViewById(R.id.customer_status);
         }
     }
 
@@ -109,14 +97,8 @@ public class CustomerDashboardListAdapter extends RecyclerView.Adapter<CustomerD
      */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = null;
-        if(viewType == 0)
-            v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.customer_dashboard_details_item, parent, false);
-        else
-            v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.customer_dashboard_status_item, parent, false);
-
+        View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.customer_list_item, parent, false);
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }
@@ -144,19 +126,12 @@ public class CustomerDashboardListAdapter extends RecyclerView.Adapter<CustomerD
      */
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+
         final HLObject customer = mDataSet.get(position);
-        if (position == 0) {
             holder.mCustomerName.setText(customer.getString(PhoenixConstants.Customer.CUSTOMER_NAME));
             holder.mCustomerEmail.setText(customer.getString(PhoenixConstants.Customer.CUSTOMER_EMAIL));
-            holder.mQuoteAmt.setText(customer.getString(PhoenixConstants.Customer.CUSTOMER_QUOTE_AMT));
-            holder.mInitialQuoteAmt.setText(customer.getString(PhoenixConstants.Customer.CUSTOMER_INITIAL_QUOTE_AMT));
-            holder.mFinalQuoteAmt.setText(customer.getString(PhoenixConstants.Customer.CUSTOMER_FINAL_QUOTE_AMT));
-            holder.mCollectedAmt.setText(customer.getString(PhoenixConstants.Customer.CUSTOMER_COLLECTED_AMT));
-            holder.mFollowUp.setText(customer.getString(PhoenixConstants.Customer.CUSTOMER_FOLLOW_UPDATE));
-        }else{
-            holder.mNextTask.setText("To send Initial Quote and Design");
-            holder.mCompletedTask.setText("Initial Quote Sent");
-        }
+            holder.mCustomerMobile.setText(customer.getString(PhoenixConstants.Customer.CUSTOMER_MOBILE));
+            holder.mCustomerProjectStatus.setText(customer.getString(PhoenixConstants.Customer.CUSTOMER_STATUS));
     }
 
     /**

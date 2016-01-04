@@ -14,6 +14,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -42,6 +43,7 @@ import com.hl.hlcorelib.mvp.presenters.HLCoreActivityPresenter;
 import com.hl.hlcorelib.utils.HLFragmentUtils;
 import com.homelane.phoenixapp.PhoenixConstants;
 import com.homelane.phoenixapp.main.dashboard.DashboardPresenter;
+import com.homelane.phoenixapp.main.project.customer.CustomerPresenter;
 import com.homelane.phoenixapp.main.project.filter.DatePickerFragment;
 import com.homelane.phoenixapp.views.CircleImageView;
 import com.homelane.phoenixapp.R;
@@ -54,7 +56,9 @@ import java.util.List;
 public class MainPresenter extends HLCoreActivityPresenter<MainView>
         implements NavigationView.OnNavigationItemSelectedListener, HLEventListener {
 
-    GoogleApiClient mGoogleApiClient;
+    private GoogleApiClient mGoogleApiClient;
+    private boolean isFromDateSelected = true;
+    private TextView mFromDate, mToDate;
 
     @Override
     protected void onBindView() {
@@ -91,12 +95,14 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
          transaction.mFrameId = R.id.fragment_frame;
          transaction.mFragmentClass = DashboardPresenter.class;
          push(transaction);
-        mView.mLeftNavigationView.setCheckedItem(R.id.nav_dashboard);
 
         if(! hasEventListener(PhoenixConstants.SNACKBAR_DISPLAY_EVENT,this))
             addEventListener(PhoenixConstants.SNACKBAR_DISPLAY_EVENT,this);
         if(! hasEventListener(PhoenixConstants.SELECTED_DATE_EVENT,this))
             addEventListener(PhoenixConstants.SELECTED_DATE_EVENT,this);
+        setNavigationItemSelection(1);
+
+        mView.mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, mView.mRightNavigationView);
 
     }
 
@@ -164,7 +170,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
 
 
     /**
-     * Function to the sliding navigation view
+     * Function to initialize the left sliding navigation view
      */
     private void setLeftNavigationView() {
         mView.mLeftNavigationView.setNavigationItemSelectedListener(this);
@@ -181,12 +187,10 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
             imageView.loadImageURL(LoginPresenter.mGoogleAccount.getPhotoUrl().toString());
     }
 
-    boolean isFromDateSelected = true;
-    TextView mFromDate, mToDate;
-
+    /**
+     * Function to initialize the right sliding navigation view
+     */
     private void setRightNavigationView() {
-//        mView.mLeftNavigationView.setNavigationItemSelectedListener(this);
-
         View headerView = LayoutInflater.from(this).inflate(R.layout.filter_layout, mView.mRightNavigationView);
         mFromDate = (TextView) headerView.findViewById(R.id.start_date);
         mToDate = (TextView) headerView.findViewById(R.id.end_date);
@@ -257,23 +261,29 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
             drawer.closeDrawer(GravityCompat.START);
         } else {
 
-            if (doubleBackToExitPressedOnce) {
+            if(getSupportFragmentManager().getBackStackEntryCount() > 1) {
+                setNavigationItemSelection(getSupportFragmentManager().getBackStackEntryCount() - 1);
                 super.onBackPressed();
-                return;
             }
-            this.doubleBackToExitPressedOnce = true;
+            else {
 
-            showSnackBar("Please click BACK again to exit");
-
-            new Handler().postDelayed(new Runnable() {
-
-                @Override
-                public void run() {
-                    doubleBackToExitPressedOnce=false;
+                if (doubleBackToExitPressedOnce) {
+                    super.onBackPressed();
+                    return;
                 }
-            }, 2000);
+                this.doubleBackToExitPressedOnce = true;
 
+                showSnackBar("Please click BACK again to exit");
 
+                new Handler().postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        doubleBackToExitPressedOnce = false;
+                    }
+                }, 2000);
+
+            }
         }
     }
 
@@ -330,6 +340,10 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
                 });
     }
 
+    /**
+     * Function that fetches the mobile manufacturer and mocel
+     * @return the manufacturer and mocel
+     */
     public String getDeviceName() {
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
@@ -341,6 +355,11 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
     }
 
 
+    /**
+     * Function to convert the string to uppercase
+     * @param s is the input string to the converted to uppercase
+     * @return the uppercase converted string
+     */
     private String capitalize(String s) {
         if (s == null || s.length() == 0) {
             return "";
@@ -353,27 +372,67 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         }
     }
 
+    private void setNavigationItemSelection(int position){
+        switch (position){
+            case 1:
+                mView.mLeftNavigationView.setCheckedItem(R.id.nav_dashboard);
+                mView.mToolbar.setSubtitle("Dashboard");
+                mView.mToolbar.setSubtitleTextAppearance(this, android.R.style.TextAppearance_Small);
+                mView.mToolbar.setSubtitleTextColor(getResources().getColor(R.color.white));
+                break;
+            case 2:
+                mView.mLeftNavigationView.setCheckedItem(R.id.nav_my_customers);
+                break;
+            case 3:
+                mView.mLeftNavigationView.setCheckedItem(R.id.nav_all_customers);
+                break;
 
-    @SuppressWarnings("StatementWithEmptyBody")
+        }
+    }
+
+
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_share)
+        if(id == R.id.nav_dashboard) {
+            navigateTo(DashboardPresenter.class);
+            mView.mToolbar.setSubtitle("Dashboard");
+        }else if(id == R.id.nav_my_customers) {
+            navigateTo(CustomerPresenter.class);
+            mView.mToolbar.setSubtitle("My Customers");
+        }else if (id == R.id.nav_share) {
             openGmailApp();
-
+        }
 
         mView.mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
+    /**
+     * Function that navigates to the new presenter
+     * @param c is the new presenter class to be navigated
+     */
+    private void navigateTo(Class c) {
+        HLFragmentUtils.HLFragmentTransaction transaction =
+                new HLFragmentUtils.HLFragmentTransaction();
+        transaction.mFrameId = R.id.fragment_frame;
+        transaction.mFragmentClass = c;
+        push(transaction);
+    }
+
+    /**
+     * Function that collects the mobile details like os, model etc and launches
+     * the gmail app to send feedback to the developers
+     */
     private void openGmailApp(){
         Spanned text = Html.fromHtml("Android OS Version: "+android.os.Build.VERSION.SDK_INT+"<br>"+
                 "Device Information: "+getDeviceName()+"<br>");
 
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
-        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{ "rajesh.c@homelane.com,vivek.c@homelane.com," +
-                "sunil.a@homelane.com","bhanuprasad.m@homelane.com","vinith.k@homelane.com"});
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{ "rajesh.c@homelane.com," +
+                "vivek.c@homelane.com,","sunil.a@homelane.com","bhanuprasad.m@homelane.com","vinith.k@homelane.com"});
         emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Feedback for Mobile Phoenix app");
         emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, text);
         emailIntent.setType("text/plain");

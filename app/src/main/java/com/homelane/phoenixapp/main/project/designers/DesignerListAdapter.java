@@ -1,4 +1,4 @@
-package com.homelane.phoenixapp.main.project;
+package com.homelane.phoenixapp.main.project.designers;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 /**
  * Created by hl0395 on 21/12/15.
  */
-public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ViewHolder> {
+public class DesignerListAdapter extends RecyclerView.Adapter<DesignerListAdapter.ViewHolder> {
 
 
     /**
@@ -30,20 +30,18 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
      */
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
-        public TextView mCustomerName;
-        public TextView mCustomerEmail;
-        public TextView mCustomerMobile;
-        public TextView mCustomerStatus;
+        public TextView mDesignerName;
+        public TextView mDesignerEmail;
+        public TextView mDesignerMobile;
 
         /**
          * @param itemView
          */
         public ViewHolder(View itemView) {
             super(itemView);
-            mCustomerName = (TextView)itemView.findViewById(R.id.customer_name);
-            mCustomerEmail = (TextView)itemView.findViewById(R.id.customer_email);
-            mCustomerMobile = (TextView)itemView.findViewById(R.id.customer_mobile);
-            mCustomerStatus = (TextView)itemView.findViewById(R.id.customer_status);
+            mDesignerName = (TextView)itemView.findViewById(R.id.customer_name);
+            mDesignerEmail = (TextView)itemView.findViewById(R.id.customer_email);
+            mDesignerMobile = (TextView)itemView.findViewById(R.id.customer_mobile);
         }
     }
 
@@ -97,7 +95,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.customer_list_item, parent, false);
+                    .inflate(R.layout.customer_list_item, parent, false);
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }
@@ -125,21 +123,27 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
      */
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+
         final HLObject customer = mDataSet.get(position);
+            holder.mDesignerName.setText(customer.getString(PhoenixConstants.Designer.DESIGNER_NAME));
+            holder.mDesignerEmail.setText(customer.getString(PhoenixConstants.Designer.DESIGNER_EMAIL));
+            holder.mDesignerMobile.setText(customer.getString(PhoenixConstants.Designer.DESIGNER_MOBILE));
+    }
 
-        holder.mCustomerName.setText(customer.getString(PhoenixConstants.Project.PROJECT_NAME));
-        holder.mCustomerEmail.setText(customer.getString(PhoenixConstants.Project.PROJECT_LOCATION));
-        holder.mCustomerMobile.setText(customer.getString(PhoenixConstants.Project.PROJECT_STATE));
-        holder.mCustomerStatus.setText(customer.getString(PhoenixConstants.Project.PROJECT_STATUS));
-
-//        holder.mDesignerName.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                HLCoreEvent event = new HLCoreEvent(PhoenixConstants.NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT,
-//                        null);
-//                HLEventDispatcher.acquire().dispatchEvent(event);
-//
-//            }
-//        });
+    /**
+     * Return the view type of the item at <code>position</code> for the purposes
+     * of view recycling.
+     * <p/>
+     * <p>The default implementation of this method returns 0, making the assumption of
+     * a single view type for the adapter. Unlike ListView adapters, types need not
+     * be contiguous. Consider using id resources to uniquely identify item view types.
+     *
+     * @param position position to query
+     * @return integer value identifying the type of the view needed to represent the item at
+     * <code>position</code>. Type codes need not be contiguous.
+     */
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 }

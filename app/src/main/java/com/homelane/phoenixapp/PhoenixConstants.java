@@ -21,6 +21,16 @@ public class PhoenixConstants {
         public static final String CUSTOMER_FOLLOW_UPDATE = "CustomerFollowUpdate";
     }
 
+    public static final class Designer {
+        public static final String NAME = "Designer";
+        public static final String DESIGNER_NAME = "DesignerName";
+        public static final String DESIGNER_EMAIL = "DesignerEmail";
+        public static final String DESIGNER_MOBILE = "DesignerMobile";
+        public static final String DESIGNER_ROLE = "DesignerRole";
+        public static final String DESIGNER_STATUS = "DesignerStatus";
+        public static final String DESIGNER_LAST_ACCESS = "DesignerLastAccess";
+    }
+
     public static final class Project {
         public static final String NAME = "Project";
         public static final String PROJECT_NAME = "ProjectName";

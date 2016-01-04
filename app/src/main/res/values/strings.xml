@@ -9,6 +9,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_logout">Logout</string>
+    <string name="action_search">Search</string>
+    <string name="action_filter">Filter</string>
     <integer name="db_version">1</integer>
 
     <!-- Splash Activity -->

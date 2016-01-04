@@ -68,7 +68,7 @@ public class ProjectPresenter extends HLCoreFragment<ProjectView> implements HLE
 //            HLFragmentUtils.HLFragmentTransaction transaction =
 //                    new HLFragmentUtils.HLFragmentTransaction();
 //            transaction.mFrameId = R.id.fragment_frame;
-//            transaction.mFragmentClass = CustomerDashboardPresenter.class;
+//            transaction.mFragmentClass = DesignerPresenter.class;
 //            push(transaction);
         }
 

@@ -33,6 +33,7 @@
                     android:id="@+id/customer_email"
                     android:layout_weight="1"
                     android:padding="10dp"
+                    android:autoLink="email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -51,6 +52,7 @@
                     android:id="@+id/customer_mobile"
                     android:layout_weight="1"
                     android:padding="10dp"
+                    android:autoLink="phone"
                     android:drawablePadding="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
