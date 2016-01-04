@@ -14,7 +14,6 @@ import com.homelane.phoenixapp.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Filter;
 
 /**
  * Created by hl0395 on 21/12/15.

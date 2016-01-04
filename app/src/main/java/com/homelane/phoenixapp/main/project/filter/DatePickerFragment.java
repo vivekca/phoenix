@@ -4,21 +4,16 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.widget.DatePicker;
-import android.widget.TextView;
 
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
 import com.hl.hlcorelib.mvp.events.HLEventDispatcher;
 import com.homelane.phoenixapp.PhoenixConstants;
-import com.homelane.phoenixapp.R;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by hl0395 on 28/12/15.

@@ -1,8 +1,6 @@
 package com.homelane.phoenixapp.main.dashboard;
 
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.v4.view.ViewPager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;

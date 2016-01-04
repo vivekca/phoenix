@@ -8,31 +8,28 @@ import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.SearchView;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -44,26 +41,22 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
 import com.hl.hlcorelib.mvp.events.HLEvent;
-import com.hl.hlcorelib.mvp.events.HLEventDispatcher;
 import com.hl.hlcorelib.mvp.events.HLEventListener;
 import com.hl.hlcorelib.mvp.presenters.HLCoreActivityPresenter;
 import com.hl.hlcorelib.orm.HLObject;
 import com.hl.hlcorelib.utils.HLFragmentUtils;
 import com.homelane.phoenixapp.PhoenixConstants;
+import com.homelane.phoenixapp.R;
 import com.homelane.phoenixapp.SearchEvent;
+import com.homelane.phoenixapp.login.LoginPresenter;
 import com.homelane.phoenixapp.main.dashboard.DashboardPresenter;
 import com.homelane.phoenixapp.main.project.customer.CustomerPresenter;
 import com.homelane.phoenixapp.main.project.filter.DatePickerFragment;
 import com.homelane.phoenixapp.views.CircleImageView;
-import com.homelane.phoenixapp.R;
-import com.homelane.phoenixapp.login.LoginPresenter;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.SynchronousQueue;
 
 public class MainPresenter extends HLCoreActivityPresenter<MainView>
         implements NavigationView.OnNavigationItemSelectedListener, HLEventListener {
@@ -214,11 +207,6 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
     String spinneritem;
     TextView mStatus;
 
-
-    public void SetDate(){
-
-    }
-
     /**
      * Function to initialize the right sliding navigation view
      */
@@ -233,12 +221,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         mDate = (TextView)headerView.findViewById(R.id.date);
         mStatus = (TextView)headerView.findViewById(R.id.task_status);
 
-
-
-
         final Calendar calendar = Calendar.getInstance();
-
-
 
         final Spinner spinner = (Spinner) headerView.findViewById(R.id.status_spinner);
 
@@ -279,23 +262,8 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
             }
         });
 
-   /*     spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String spinnerValue= spinnerItems.get(position);
-                spinneritem = spinnerValue;
-
-            }
-        });*/
-
         mFromDate.setText("Select the Date");
         mToDate.setText("Select the Date");
-
-
-
-//        mFromDate.setText(calendar.get(Calendar.DAY_OF_MONTH) + "-" + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.YEAR));
-//        mToDate.setText(calendar.get(Calendar.DAY_OF_MONTH) + "-" + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.YEAR));
-
 
         mFilterButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -309,13 +277,6 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
                     mDate.setVisibility(View.VISIBLE);
                     mDate.setText(mFromDate.getText() + " - " + mToDate.getText());
                 }
-
-             /*   Date fromdate = (Date) mFromDate.getText();
-                SimpleDateFormat postFormater = new SimpleDateFormat("dd-MM-yyyy");
-                String newDateStr = postFormater.format(fromdate);*/
-
-                Log.i("TAG", (String) mFromDate.getText());
-            //    Date date =  mFromDate.getText();
 
                 HLObject task = new HLObject(PhoenixConstants.Task.TASK_NAME);
                 task.put(PhoenixConstants.Task.TASK_STATUS, spinneritem);
