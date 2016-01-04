@@ -24,7 +24,7 @@ import java.util.Locale;
  * Created by hl0395 on 28/12/15.
  */
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
-    Bundle bundle;
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
         //Use the current date as the default date in the date picker
@@ -32,57 +32,33 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
-       // mDatePicker.getDatePicker().setMaxDate(System.currentTimeMillis());
-
-
-        bundle =getArguments();
-
 
         DatePickerDialog datePickerDialog;
-        String string =  bundle.getString(PhoenixConstants.Task.START_DATE);
+        Bundle bundle = getArguments();
 
-        String str_date="11-04-07";
-        Date date ;
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-YY");
-
-        try {
-            date = formatter.parse(str_date);
-            System.out.println(date);
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-
-//        SimpleDateFormat formatter ;
-//
-//        formatter = new SimpleDateFormat("dd-MMM-yy");
-
-
-
-        if(bundle.getBoolean("from date")) {
+        if(bundle.getBoolean(PhoenixConstants.Task.TASK_FLAG)) {
           datePickerDialog = new DatePickerDialog(getActivity(), this, year, month, day);
             datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         }else {
+            String string =  bundle.getString(PhoenixConstants.Task.START_DATE);
+            Date date ;
+            long timeInMilliseconds = 0;
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+
+            try {
+                date = formatter.parse(string);
+                timeInMilliseconds = date.getTime();
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
             datePickerDialog = new DatePickerDialog(getActivity(), this,year, month, day);
+            datePickerDialog.getDatePicker().setMinDate(timeInMilliseconds);
             datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-          //  datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis()-);
 
         }
 
-
-
-
-
-         //   datePickerDialog.getDatePicker().setMinDate();
-
-
-        //Create a new DatePickerDialog instance and return it
-        /*
-            DatePickerDialog Public Constructors - Here we uses first one
-            public DatePickerDialog (Context context, DatePickerDialog.OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth)
-            public DatePickerDialog (Context context, int theme, DatePickerDialog.OnDateSetListener listener, int year, int monthOfYear, int dayOfMonth)
-         */
         return datePickerDialog;
     }
 

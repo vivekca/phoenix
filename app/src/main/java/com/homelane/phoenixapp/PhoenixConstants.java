@@ -42,6 +42,8 @@ public class PhoenixConstants {
 
         public static final String TASK_STATUS = "TaskStatus";
 
+        public static final String TASK_FLAG="TaskFlag";
+
         public static final String FILTER = "filter";
     }
     /**

@@ -70,6 +70,9 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
 
     GoogleApiClient mGoogleApiClient;
 
+    String mFromValue;
+    String mToValue;
+
     @Override
     protected void onBindView() {
         super.onBindView();
@@ -136,9 +139,6 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         removeEventListener(PhoenixConstants.SELECTED_DATE_EVENT, this);
     }
 
-    String mFromValue;
-    String mToValue;
-
     @Override
     public void onEvent(HLEvent hlEvent) {
         HLCoreEvent e = (HLCoreEvent)hlEvent;
@@ -158,7 +158,6 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
                                 bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR));
 
                 mToValue =bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY)+"-"+ bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH)+"-"+ bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR);
-
 
             }
         }
@@ -213,9 +212,6 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
     TextView mStatus;
 
 
-    public void SetDate(){
-
-    }
 
     private void setRightNavigationView() {
 //        mView.mLeftNavigationView.setNavigationItemSelectedListener(this);
@@ -228,9 +224,6 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         mCancelButton = (ImageView)headerView.findViewById(R.id.cancel_image);
         mDate = (TextView)headerView.findViewById(R.id.date);
         mStatus = (TextView)headerView.findViewById(R.id.task_status);
-
-
-
 
         final Calendar calendar = Calendar.getInstance();
 
@@ -250,6 +243,8 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
                 this,android.R.layout.simple_spinner_item,spinnerItems);
         stringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(stringArrayAdapter);
+        mFromDate.setText("Select the Date");
+        mToDate.setText("Select the Date");
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -275,24 +270,6 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
             }
         });
 
-   /*     spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String spinnerValue= spinnerItems.get(position);
-                spinneritem = spinnerValue;
-
-            }
-        });*/
-
-        mFromDate.setText("Select the Date");
-        mToDate.setText("Select the Date");
-
-
-
-//        mFromDate.setText(calendar.get(Calendar.DAY_OF_MONTH) + "-" + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.YEAR));
-//        mToDate.setText(calendar.get(Calendar.DAY_OF_MONTH) + "-" + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.YEAR));
-
-
         mFilterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -306,38 +283,15 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
                     mDate.setText(mFromDate.getText() + " - " + mToDate.getText());
                 }
 
-             /*   Date fromdate = (Date) mFromDate.getText();
-                SimpleDateFormat postFormater = new SimpleDateFormat("dd-MM-yyyy");
-                String newDateStr = postFormater.format(fromdate);*/
-
-                Log.i("TAG", (String) mFromDate.getText());
-            //    Date date =  mFromDate.getText();
-
                 HLObject task = new HLObject(PhoenixConstants.Task.TASK_NAME);
                 task.put(PhoenixConstants.Task.TASK_STATUS, spinneritem);
                 task.put(PhoenixConstants.Task.START_DATE, (String) mFromDate.getText());
                 task.put(PhoenixConstants.Task.TO_DATE, (String) mToDate.getText());
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(PhoenixConstants.Task.FILTER, task);
-                String string = "vinith/kumar/jsdjj";
 
-
-                String sr = "/";
-                String k[]=string.split(sr);
-
-                for (int i = 0; i < k.length; i++)
-                    System.out.println("the value is ----------" +k[i]);
-
-
-
-
-
-             /*   HLCoreEvent event = new HLCoreEvent(PhoenixConstants.FILTER_EVENT, bundle);
+                /*   HLCoreEvent event = new HLCoreEvent(PhoenixConstants.FILTER_EVENT, bundle);
                 HLEventDispatcher.acquire().dispatchEvent(event);*/
-
-
-
-
 
 
             }
@@ -350,10 +304,10 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
                 isFromDateSelected = true;
                 DialogFragment newFragment = new DatePickerFragment();
                 Bundle bundle = new Bundle();
-                bundle.putBoolean("from date",isFromDateSelected);
+                bundle.putBoolean(PhoenixConstants.Task.TASK_FLAG,isFromDateSelected);
                 newFragment.setArguments(bundle);
                 newFragment.show(getFragmentManager(), MainPresenter.class.getName());
-              //  mDatePicker.getDatePicker().setMaxDate(System.currentTimeMillis());
+
 
 
 
@@ -368,8 +322,8 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
                 isFromDateSelected = false;
                 DialogFragment newFragment = new DatePickerFragment();
                 Bundle bundle = new Bundle();
-                bundle.putBoolean("from date",isFromDateSelected);
-                bundle.putString(PhoenixConstants.Task.START_DATE,(String) mFromDate.getText());
+                bundle.putBoolean(PhoenixConstants.Task.TASK_FLAG,isFromDateSelected);
+                bundle.putString(PhoenixConstants.Task.START_DATE, (String) mFromDate.getText());
                 newFragment.setArguments(bundle);
                 newFragment.show(getFragmentManager(), MainPresenter.class.getName());
 
