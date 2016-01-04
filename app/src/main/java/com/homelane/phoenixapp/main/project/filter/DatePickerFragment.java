@@ -14,6 +14,7 @@ import com.homelane.phoenixapp.PhoenixConstants;
 import com.homelane.phoenixapp.R;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -38,20 +39,26 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
 
         DatePickerDialog datePickerDialog;
-      /*  String string =  bundle.getString(PhoenixConstants.Task.START_DATE);
+        String string =  bundle.getString(PhoenixConstants.Task.START_DATE);
 
-        String str_date="11-June-07";
-        SimpleDateFormat formatter ;
+        String str_date="11-04-07";
         Date date ;
-        formatter = new SimpleDateFormat("dd-MMM-yy");
-        date = formatter.parse(str_date);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-YY");
+
+        try {
+            date = formatter.parse(str_date);
+            System.out.println(date);
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
 
+//        SimpleDateFormat formatter ;
+//
+//        formatter = new SimpleDateFormat("dd-MMM-yy");
 
-        String string = "January 2, 2010";
-        DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
-        Date date = format.parse(string);
-        System.out.println(date); // Sat Jan 02 00:00:0*/
+
 
         if(bundle.getBoolean("from date")) {
           datePickerDialog = new DatePickerDialog(getActivity(), this, year, month, day);
