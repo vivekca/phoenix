@@ -41,6 +41,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
 import com.hl.hlcorelib.mvp.events.HLEvent;
+import com.hl.hlcorelib.mvp.events.HLEventDispatcher;
 import com.hl.hlcorelib.mvp.events.HLEventListener;
 import com.hl.hlcorelib.mvp.presenters.HLCoreActivityPresenter;
 import com.hl.hlcorelib.orm.HLObject;
@@ -104,8 +105,16 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
          transaction.mFragmentClass = DashboardPresenter.class;
          push(transaction);
 
+
+
+
+
         if(! hasEventListener(PhoenixConstants.SNACKBAR_DISPLAY_EVENT,this))
             addEventListener(PhoenixConstants.SNACKBAR_DISPLAY_EVENT,this);
+
+        if(! hasEventListener(PhoenixConstants.DISABLE_SEARCH_EVENT,this))
+            addEventListener(PhoenixConstants.DISABLE_SEARCH_EVENT,this);
+
         if(! hasEventListener(PhoenixConstants.SELECTED_DATE_EVENT,this))
             addEventListener(PhoenixConstants.SELECTED_DATE_EVENT,this);
         setNavigationItemSelection(1);
@@ -157,6 +166,9 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
                 mToValue =bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY)+"-"+ bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH)+"-"+ bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR);
 
             }
+        }else if(e.getType().equals(PhoenixConstants.DISABLE_SEARCH_EVENT)){
+
+            searchView.setIconified(true);
         }
 
     }
@@ -380,13 +392,15 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         }
     }
 
+    SearchView searchView;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+       searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager
-                    .getSearchableInfo(getComponentName()));
+                .getSearchableInfo(getComponentName()));
 
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             @Override
@@ -413,6 +427,8 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
 
         return true;
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -501,12 +517,19 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         int id = item.getItemId();
 
         if(id == R.id.nav_dashboard) {
+
             navigateTo(DashboardPresenter.class);
             mView.mToolbar.setSubtitle("Dashboard");
         }else if(id == R.id.nav_my_customers) {
+            HLCoreEvent event = new HLCoreEvent(PhoenixConstants.DISABLE_SEARCH_EVENT,
+                    null);
+            HLEventDispatcher.acquire().dispatchEvent(event);
             navigateTo(CustomerPresenter.class);
             mView.mToolbar.setSubtitle("My Customers");
         }else if (id == R.id.nav_share) {
+            HLCoreEvent event = new HLCoreEvent(PhoenixConstants.DISABLE_SEARCH_EVENT,
+                    null);
+            HLEventDispatcher.acquire().dispatchEvent(event);
             openGmailApp();
         }
 
