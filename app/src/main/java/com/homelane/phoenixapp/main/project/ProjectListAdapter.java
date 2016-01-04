@@ -4,6 +4,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -12,17 +14,69 @@ import com.homelane.phoenixapp.PhoenixConstants;
 import com.homelane.phoenixapp.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by hl0395 on 21/12/15.
  */
-public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ViewHolder> {
+public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ViewHolder>  implements Filterable {
 
 
     /**
      * Constains the raw data
      */
     private ArrayList<HLObject> mDataSet;
+
+    public List<HLObject> mFilteredProjectList;
+
+
+    private class ProjectFilter extends Filter {
+        private ProjectFilter() {
+        }
+
+        protected FilterResults performFiltering(CharSequence query) {
+            FilterResults results = new FilterResults();
+            if (query.length() == 0) {
+                results.values = ProjectListAdapter.this.mDataSet;
+                results.count = ProjectListAdapter.this.mDataSet.size();
+            } else {
+                List<HLObject> tempList = new ArrayList();
+                for (int i = 0; i < ProjectListAdapter.this.mDataSet.size(); i++) {
+                    HLObject project = (HLObject) ProjectListAdapter.this.mDataSet.get(i);
+                    if (listContains(project, query)) {
+                        tempList.add(project);
+                    }
+                }
+                results.values = tempList;
+                results.count = tempList.size();
+            }
+            return results;
+        }
+
+        private boolean listContains(HLObject project, CharSequence query) {
+            query = query.toString().trim().toLowerCase();
+            if (project.getString(PhoenixConstants.Project.PROJECT_NAME).trim().toLowerCase().contains(query) || project.getString(PhoenixConstants.Project.PROJECT_LOCATION).toLowerCase().contains(query) || project.getString(PhoenixConstants.Project.PROJECT_STATE).toLowerCase().contains(query)) {
+                return true;
+            }
+            String name = project.getString(PhoenixConstants.Project.PROJECT_STATUS);
+            if (name.toLowerCase().contains(query) || name.toLowerCase().contains(query)) {
+                return true;
+            }
+            return false;
+        }
+
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            ProjectListAdapter.this.mFilteredProjectList.clear();
+            ProjectListAdapter.this.mFilteredProjectList.addAll((ArrayList) results.values);
+            ProjectListAdapter.this.notifyDataSetChanged();
+        }
+    }
+
+
+    @Override
+    public Filter getFilter() {
+        return new ProjectFilter();
+    }
 
 
     /**
@@ -61,6 +115,8 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
 
     public void setmDataSet(ArrayList<HLObject> mDataSet) {
         this.mDataSet = mDataSet;
+        this.mFilteredProjectList = new ArrayList();
+        this.mFilteredProjectList.addAll(mDataSet);
     }
 
 
@@ -71,7 +127,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
      */
     @Override
     public int getItemCount() {
-        return ((mDataSet != null) ? mDataSet.size() : 0);
+        return this.mFilteredProjectList != null ? this.mFilteredProjectList.size() : 0;
     }
 
     /**
@@ -125,7 +181,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
      */
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final HLObject customer = mDataSet.get(position);
+        HLObject customer = (HLObject) this.mFilteredProjectList.get(position);
 
         holder.mCustomerName.setText(customer.getString(PhoenixConstants.Project.PROJECT_NAME));
         holder.mCustomerEmail.setText(customer.getString(PhoenixConstants.Project.PROJECT_LOCATION));
