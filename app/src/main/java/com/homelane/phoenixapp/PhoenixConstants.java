@@ -34,6 +34,16 @@ public class PhoenixConstants {
         public static final String SELECTED_MONTH = "SelectedMonth";
         public static final String SELECTED_YEAR = "SelectedYear";
     }
+
+    public static final class Task {
+        public static final String TASK_NAME="TaskName";
+        public static final String START_DATE  = "StartDate";
+        public static final String TO_DATE  = "ToDate";
+
+        public static final String TASK_STATUS = "TaskStatus";
+
+        public static final String FILTER = "filter";
+    }
     /**
      * Class holds all keys against respective values in
      * configuration file.Make sure the value used against constants
@@ -45,6 +55,11 @@ public class PhoenixConstants {
         public static final int HL_ENVIRONMENT_STAGE       = 1;
         public static final int HL_ENVIRONMENT_PROD        = 2;
     }
+
+
+    public static final String SEARCH_EVENT = "SEARCH_EVENT";
+
+    public static final String FILTER_EVENT = "FILTER_EVENT";
 
 
     public static final String NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT ="NavigateToCustomerDashboard";

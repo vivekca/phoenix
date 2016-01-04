@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -12,17 +13,84 @@ import com.homelane.phoenixapp.PhoenixConstants;
 import com.homelane.phoenixapp.R;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Filter;
 
 /**
  * Created by hl0395 on 21/12/15.
  */
-public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.ViewHolder> {
+public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.ViewHolder> implements Filterable{
 
 
     /**
      * Constains the raw data
      */
     private ArrayList<HLObject> mDataSet;
+
+    public List<HLObject> mFilteredProjectList;
+
+
+    @Override
+    public android.widget.Filter getFilter() {
+        return new ProjectFilter();
+    }
+
+
+
+
+
+
+    private class ProjectFilter extends android.widget.Filter {
+        private ProjectFilter() {
+        }
+
+        protected FilterResults performFiltering(CharSequence query) {
+            FilterResults results = new FilterResults();
+
+
+
+                if (query.length() == 0) {
+                    results.values = OverdueListAdapter.this.mDataSet;
+                    results.count = OverdueListAdapter.this.mDataSet.size();
+                } else {
+                    List<HLObject> tempList = new ArrayList();
+                    for (int i = 0; i < OverdueListAdapter.this.mDataSet.size(); i++) {
+                        HLObject project = (HLObject) OverdueListAdapter.this.mDataSet.get(i);
+                        if (listContains(project, query)) {
+                            tempList.add(project);
+                        }
+                    }
+                    results.values = tempList;
+                    results.count = tempList.size();
+                }
+
+            return results;
+        }
+
+        private boolean listContains(HLObject project, CharSequence query) {
+            query = query.toString().trim().toLowerCase();
+            String string =(String)query;
+            boolean flag= string.contains("/");
+            if(flag == false) {
+            if (project.getString(PhoenixConstants.Task.TASK_NAME).trim().toLowerCase().contains(query) || project.getString(PhoenixConstants.Task.START_DATE).toLowerCase().contains(query) || project.getString(PhoenixConstants.Task.TASK_STATUS).toLowerCase().contains(query)) {
+                return true;
+            }
+            }else {
+                String k[]=string.split("/");
+                if(project.getString(PhoenixConstants.Task.TASK_NAME).trim().toLowerCase().contains(k[0].toLowerCase().trim()) || project.getString(PhoenixConstants.Task.START_DATE).trim().contains(k[1] )||project.getString(PhoenixConstants.Task.TO_DATE).trim().contains(k[2]))
+                return true;
+            }
+
+
+            return false;
+        }
+
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            OverdueListAdapter.this.mFilteredProjectList.clear();
+            OverdueListAdapter.this.mFilteredProjectList.addAll((ArrayList) results.values);
+            OverdueListAdapter.this.notifyDataSetChanged();
+        }
+    }
 
 
     /**
@@ -44,6 +112,7 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
             mCustomerEmail = (TextView)itemView.findViewById(R.id.customer_email);
             mCustomerMobile = (TextView)itemView.findViewById(R.id.customer_mobile);
             mCustomerStatus = (TextView)itemView.findViewById(R.id.customer_status);
+            mCustomerEmail.setVisibility(View.GONE);
         }
     }
 
@@ -61,6 +130,8 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
 
     public void setmDataSet(ArrayList<HLObject> mDataSet) {
         this.mDataSet = mDataSet;
+        this.mFilteredProjectList = new ArrayList();
+        this.mFilteredProjectList.addAll(mDataSet);
     }
 
 
@@ -71,7 +142,8 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
      */
     @Override
     public int getItemCount() {
-        return ((mDataSet != null) ? mDataSet.size() : 0);
+        return this.mFilteredProjectList != null ? this.mFilteredProjectList.size() : 0;
+
     }
 
     /**
@@ -125,12 +197,12 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
      */
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final HLObject customer = mDataSet.get(position);
+        HLObject customer = (HLObject) this.mFilteredProjectList.get(position);
 
-        holder.mCustomerName.setText(customer.getString(PhoenixConstants.Project.PROJECT_NAME));
-        holder.mCustomerEmail.setText(customer.getString(PhoenixConstants.Project.PROJECT_LOCATION));
-        holder.mCustomerMobile.setText(customer.getString(PhoenixConstants.Project.PROJECT_STATE));
-        holder.mCustomerStatus.setText(customer.getString(PhoenixConstants.Project.PROJECT_STATUS));
+
+        holder.mCustomerName.setText(customer.getString(PhoenixConstants.Task.TASK_NAME));
+        holder.mCustomerMobile.setText(customer.getString(PhoenixConstants.Task.START_DATE));
+        holder.mCustomerStatus.setText(customer.getString(PhoenixConstants.Task.TASK_STATUS));
 
     }
 }
