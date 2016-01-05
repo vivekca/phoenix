@@ -56,7 +56,6 @@ public class ProjectPresenter extends HLCoreFragment<ProjectView> implements HLE
         super.onDestroyHLView();
         removeEventListener(PhoenixConstants.NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT, this);
 
-        removeEventListener(PhoenixConstants.SEARCH_EVENT,this);
 
     }
 
@@ -82,22 +81,18 @@ public class ProjectPresenter extends HLCoreFragment<ProjectView> implements HLE
 //            transaction.mFrameId = R.id.fragment_frame;
 //            transaction.mFragmentClass = DesignerPresenter.class;
 //            push(transaction);
-        } else if (e.getType().equals(PhoenixConstants.SEARCH_EVENT)) {
-            SearchEvent searchEvent = (SearchEvent) hlEvent;
-            if ((searchEvent.getmCategory() == 2)) {
-                this.mProjectListAdapter.getFilter().filter(searchEvent.getmExtra().getString("android.intent.action.SEARCH"));
-            }
         }
 
 
     }
 
-    public void filterList(HLObject filterObj) {
-        this.mProjectListAdapter.getFilter().filter(filterObj.getString("android.intent.action.SEARCH"));
+    public void searchList(String query){
+        this.mProjectListAdapter.getFilter().filter(
+                query);
 
     }
 
-        @Override
+    @Override
     protected int getMenuLayout() {
         return 0;
     }

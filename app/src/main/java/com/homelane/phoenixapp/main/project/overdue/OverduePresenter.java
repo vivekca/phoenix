@@ -128,7 +128,6 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> implements HLE
                         mView.mErrorText.setText("NO Tasks Found");
                     }
 
-
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -150,13 +149,6 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> implements HLE
         HLCoreEvent e = (HLCoreEvent)hlEvent;
         Bundle bundle=e.getmExtra();
 
-        if (e.getType().equals(PhoenixConstants.SEARCH_EVENT)) {
-            SearchEvent searchEvent = (SearchEvent) hlEvent;
-            if ((searchEvent.getmCategory() == 2)) {
-                this.mOverDueListAdapter.getFilter().filter(
-                        searchEvent.getmExtra().getString("android.intent.action.SEARCH"));
-            }
-        }
     }
 
     public void filterList(HLObject filterObj){
@@ -179,10 +171,15 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> implements HLE
 
     }
 
+    public void searchList(String query){
+        this.mOverDueListAdapter.getFilter().filter(
+                query);
+
+    }
+
     @Override
     protected void onDestroyHLView() {
         super.onDestroyHLView();
-        removeEventListener(PhoenixConstants.SEARCH_EVENT, this);
 
     }
 

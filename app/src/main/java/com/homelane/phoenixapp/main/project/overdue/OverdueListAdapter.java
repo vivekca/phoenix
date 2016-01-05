@@ -52,7 +52,7 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
                 if (query.length() == 0) {
                     results.values = OverdueListAdapter.this.mDataSet;
                     results.count = OverdueListAdapter.this.mDataSet.size();
-                } else {
+                }else {
                     List<HLObject> tempList = new ArrayList();
                     for (int i = 0; i < OverdueListAdapter.this.mDataSet.size(); i++) {
                         HLObject project = (HLObject) OverdueListAdapter.this.mDataSet.get(i);
@@ -68,11 +68,12 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
         }
 
 
+
         private boolean listContains(HLObject project, CharSequence query) {
             query = query.toString().trim().toLowerCase();
             String string =(String)query;
-            boolean flag= string.contains("/");
-            if(!flag) {
+             mFlag = string.contains("/");
+            if(!mFlag) {
                 if (project.getString(PhoenixConstants.Task.TASK_NAME).trim().toLowerCase().contains(query) ||
                         project.getString(PhoenixConstants.Task.START_DATE).toLowerCase().contains(query) ||
                         project.getString(PhoenixConstants.Task.TASK_STATUS).toLowerCase().contains(query)) {
@@ -80,6 +81,7 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
                 }
             }else {
                 String k[]=string.split("/");
+                mSearchFlag = true;
                 if(k.length == 1) {
                     if (project.getString(PhoenixConstants.Task.TASK_STATUS).trim().toLowerCase().
                             equals(k[0].toLowerCase().trim()))
@@ -89,6 +91,7 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
                     Date start = stringToDate(k[1]);
                     Date end = stringToDate(k[2]);
                     Date taskDate = stringToDate(project.getString(PhoenixConstants.Task.START_DATE));
+
 
                     if (project.getString(PhoenixConstants.Task.TASK_STATUS).trim().toLowerCase().
                             equals(k[0].toLowerCase().trim()) && isWithinRange(taskDate,start,end) )
@@ -100,17 +103,34 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
         }
 
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            OverdueListAdapter.this.mFilteredProjectList.clear();
-            OverdueListAdapter.this.mFilteredProjectList.addAll((ArrayList) results.values);
-            OverdueListAdapter.this.notifyDataSetChanged();
+            if(mSearchFlag){
+                mFilterList = (ArrayList) results.values;
+            }
+
+                OverdueListAdapter.this.mFilteredProjectList.clear();
+                OverdueListAdapter.this.mFilteredProjectList.addAll((ArrayList) results.values);
+                OverdueListAdapter.this.notifyDataSetChanged();
         }
     }
+
+
+    /**
+     * clearing the SearchFilter Object;
+     */
+    public void clearFilterList(){
+        mFilterList.clear();
+    }
+
+    List<HLObject> mFilterList = new ArrayList();
+    boolean mFlag, mSearchFlag =false;
+
 
     /**
      * Function to convert the date from string to Date object
      * @param dateInString is the date in string format
      * @return the Date object
      */
+
     private Date stringToDate(String dateInString){
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         try {
