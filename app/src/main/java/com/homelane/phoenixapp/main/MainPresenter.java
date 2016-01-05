@@ -104,18 +104,19 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
          transaction.mFragmentClass = DashboardPresenter.class;
          push(transaction);
 
-
-
-
-
-        if(! hasEventListener(PhoenixConstants.SNACKBAR_DISPLAY_EVENT,this))
+        if(!hasEventListener(PhoenixConstants.SNACKBAR_DISPLAY_EVENT,this))
             addEventListener(PhoenixConstants.SNACKBAR_DISPLAY_EVENT,this);
 
-        if(! hasEventListener(PhoenixConstants.DISABLE_SEARCH_EVENT,this))
+        if(!hasEventListener(PhoenixConstants.DISABLE_SEARCH_EVENT,this))
             addEventListener(PhoenixConstants.DISABLE_SEARCH_EVENT,this);
 
-        if(! hasEventListener(PhoenixConstants.SELECTED_DATE_EVENT,this))
+        if(!hasEventListener(PhoenixConstants.SELECTED_DATE_EVENT,this))
             addEventListener(PhoenixConstants.SELECTED_DATE_EVENT,this);
+
+        if(!hasEventListener(PhoenixConstants.DISABLE_FILTER_EVENT,this))
+            addEventListener(PhoenixConstants.DISABLE_FILTER_EVENT,this);
+
+
         setNavigationItemSelection(1);
 
         mView.mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, mView.mRightNavigationView);
@@ -142,6 +143,8 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         super.onDestroyHLView();
         removeEventListener(PhoenixConstants.SNACKBAR_DISPLAY_EVENT, this);
         removeEventListener(PhoenixConstants.SELECTED_DATE_EVENT, this);
+        removeEventListener(PhoenixConstants.DISABLE_FILTER_EVENT, this);
+        removeEventListener(PhoenixConstants.DISABLE_SEARCH_EVENT, this);
     }
 
     @Override
@@ -153,15 +156,19 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
             showSnackBar(bundle.getString(PhoenixConstants.SNACKBAR_DISPLAY_MESSAGE));
         else if(e.getType().equals(PhoenixConstants.SELECTED_DATE_EVENT)){
             String day = bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY).length() == 1 ?
-                    "0" + bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY) : bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY);
+                    "0" + bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY) :
+                    bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY);
             String month = bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH).length() == 1 ?
-                    "0" + bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH) : bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH);
+                    "0" + bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH) :
+                    bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH);
 
 
             if(isFromDateSelected) {
                 mFromDate.setText(day + "-" + month + "-" +
                                 bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR));
-                mFromValue =bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY)+"-"+ bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH)+"-"+ bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR);
+                mFromValue =bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY)+"-"+
+                        bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH)+"-"+
+                        bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR);
             }else {
                 mToDate.setText(day + "-" + month + "-" +
                                 bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR));
@@ -169,10 +176,14 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
                 mToValue = day+"-"+ month +"-"+ bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR);
 
             }
-        }else if(e.getType().equals(PhoenixConstants.DISABLE_SEARCH_EVENT)){
-
+        }else if(e.getType().equals(PhoenixConstants.DISABLE_SEARCH_EVENT))
             searchView.setIconified(true);
+        else if(e.getType().equals(PhoenixConstants.DISABLE_FILTER_EVENT)){
+            isFilterVisible = bundle.getBoolean(PhoenixConstants.FILTER_STATUS);
+            supportInvalidateOptionsMenu();
         }
+
+
 
     }
 
@@ -242,8 +253,8 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         final Spinner spinner = (Spinner) headerView.findViewById(R.id.status_spinner);
 
         final ArrayList<String> spinnerItems = new ArrayList<String>();
-        spinnerItems.add("To send Initial Quote");
-        spinnerItems.add("Initial Quote Sent");
+        spinnerItems.add("Initial Quote");
+        spinnerItems.add("Collect 10%");
         spinnerItems.add("Initial Quote Approved");
         spinnerItems.add("Initial Quote - Requested For Rev");
         spinnerItems.add("Initial Quote - Revision Sent");
@@ -253,8 +264,8 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
                 this,android.R.layout.simple_spinner_item,spinnerItems);
         stringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(stringArrayAdapter);
-        mFromDate.setText("Select the Date");
-        mToDate.setText("Select the Date");
+        mFromDate.setText(getString(R.string.select_date));
+        mToDate.setText(getString(R.string.select_date));
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -514,7 +525,35 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         }
     }
 
+    /**
+     * Prepare the Screen's standard options menu to be displayed.  This is
+     * called right before the menu is shown, every time it is shown.  You can
+     * use this method to efficiently enable/disable items or otherwise
+     * dynamically modify the contents.
+     * <p/>
+     * <p>The default implementation updates the system menu items based on the
+     * activity's state.  Deriving classes should always call through to the
+     * base class implementation.
+     *
+     * @param menu The options menu as last shown or first initialized by
+     *             onCreateOptionsMenu().
+     * @return You must return true for the menu to be displayed;
+     * if you return false it will not be shown.
+     * @see #onCreateOptionsMenu
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.action_filter);
 
+        if(isFilterVisible)
+            item.setEnabled(true);
+        else
+            item.setEnabled(false);
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    boolean isFilterVisible = false;
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {

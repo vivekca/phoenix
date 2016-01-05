@@ -46,15 +46,14 @@ public class PhoenixConstants {
     }
 
     public static final class Task {
+        public static final String NAME = "Task";
+        public static final String TASK_ID = "TaskID";
         public static final String TASK_NAME="TaskName";
         public static final String START_DATE  = "StartDate";
         public static final String TO_DATE  = "ToDate";
-
         public static final String TASK_STATUS = "TaskStatus";
-
-        public static final String TASK_FLAG="TaskFlag";
-
-        public static final String FILTER = "filter";
+        public static final String TASK_FLAG = "TaskFlag";
+        public static final String FILTER = "Filter";
     }
     /**
      * Class holds all keys against respective values in
@@ -63,6 +62,7 @@ public class PhoenixConstants {
      */
     public static final class AppConfig{
         public static final String HL_PROJECT_DETAILS_URL  = "hl_project_details_url";
+        public static final String HL_AGGREGATE_TASK_URL  = "hl_aggregate_task_url";
         public static final int HL_ENVIRONMENT_DEV         = 0;
         public static final int HL_ENVIRONMENT_STAGE       = 1;
         public static final int HL_ENVIRONMENT_PROD        = 2;
@@ -70,10 +70,9 @@ public class PhoenixConstants {
 
 
     public static final String SEARCH_EVENT = "SEARCH_EVENT";
-
     public static final String DISABLE_SEARCH_EVENT = "DISABLE_SEARCH_EVENT";
-
-
+    public static final String DISABLE_FILTER_EVENT = "DISABLE_FILTER_EVENT";
+    public static final String FILTER_STATUS = "FILTER_STATUS";
     public static final String FILTER_EVENT = "FILTER_EVENT";
 
 

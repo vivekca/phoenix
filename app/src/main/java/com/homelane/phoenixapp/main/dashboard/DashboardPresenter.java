@@ -2,6 +2,7 @@ package com.homelane.phoenixapp.main.dashboard;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -27,6 +28,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by hl0395 on 16/12/15.
@@ -65,6 +69,17 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
 
             @Override
             public void onPageSelected(int position) {
+                Bundle bundle = new Bundle();
+
+                if(position == 0)
+                    bundle.putBoolean(PhoenixConstants.FILTER_STATUS, false);
+                else
+                    bundle.putBoolean(PhoenixConstants.FILTER_STATUS, true);
+
+                HLCoreEvent event = new HLCoreEvent(PhoenixConstants.DISABLE_FILTER_EVENT,
+                        bundle);
+                HLEventDispatcher.acquire().dispatchEvent(event);
+
 
             }
 
@@ -97,7 +112,7 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFragment(mProjectPresenter, "Projects Assigned");
         adapter.addFragment(mOverduePresenter, "Overdue Tasks");
-        adapter.addFragment(new OverduePresenter(), "Pending Tasks");
+//        adapter.addFragment(new OverduePresenter(), "Pending Tasks");
         mView.mViewPager.setAdapter(adapter);
     }
 
@@ -130,6 +145,7 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
                     JSONArray projects = jsonObject.getJSONArray("projects");
 
                     ArrayList<HLObject> projectList = new ArrayList<HLObject>();
+                    HashSet<String> taskList = new HashSet<String>();
 
                     for (int i=0; i < projects.length(); i++){
                         HLObject hlProject = new HLObject(PhoenixConstants.Project.NAME);
@@ -142,15 +158,25 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
                         hlProject.put(PhoenixConstants.Project.PROJECT_STATUS, project.getString("status"));
 
                         projectList.add(hlProject);
+
+                        JSONArray tasks = project.getJSONArray("tasks");
+
+                        for(int j=0; j<tasks.length(); j++){
+                            JSONObject task = tasks.getJSONObject(j);
+                            taskList.add(task.getString("name"));
+                        }
                     }
 
                     Bundle bundle = new Bundle();
                     bundle.putParcelableArrayList("list", projectList);
-
                     mProjectPresenter.setArguments(bundle);
 
+                    ArrayList<String> list =new ArrayList<String> (taskList);
 
 
+                    bundle = new Bundle();
+                    bundle.putStringArrayList("list", list);
+                    mOverduePresenter.setArguments(bundle);
 
                     setupViewPager();
                     ((MainPresenter)getActivity()).getTabLayout().setupWithViewPager(mView.mViewPager);

@@ -27,26 +27,14 @@ public class ProjectPresenter extends HLCoreFragment<ProjectView> implements HLE
     protected void onBindView() {
         super.onBindView();
 
-        //   ArrayList<HLObject> projectList = getArguments().getParcelableArrayList("list");
-
-        ArrayList<HLObject> customerList = new ArrayList();
-
-
-        HLObject customer = new HLObject(PhoenixConstants.Project.NAME);
-
-
-        customer.put(PhoenixConstants.Project.PROJECT_NAME, "Vivek CA");
-        customer.put(PhoenixConstants.Project.PROJECT_LOCATION, "Covai");
-        customer.put(PhoenixConstants.Project.PROJECT_STATE, "Tamil Nadu");
-        customer.put(PhoenixConstants.Project.PROJECT_STATUS, "To Send Initial Quote");
-        customerList.add(customer);
+        ArrayList<HLObject> projectList = getArguments().getParcelableArrayList("list");
 
         mProjectListAdapter = new ProjectListAdapter();
-        mProjectListAdapter.setmDataSet(customerList);
+        mProjectListAdapter.setmDataSet(projectList);
 
         mView.mProjectList.setAdapter(mProjectListAdapter);
 
-        if(customerList.size() > 0) {
+        if(projectList.size() > 0) {
             mView.mProjectList.setVisibility(View.VISIBLE);
             mView.mErrorText.setVisibility(View.GONE);
         }else{
@@ -54,21 +42,13 @@ public class ProjectPresenter extends HLCoreFragment<ProjectView> implements HLE
             mView.mProjectList.setVisibility(View.GONE);
             mView.mErrorText.setVisibility(View.VISIBLE);
             mView.mErrorText.setText("No projects found.");
-
         }
-
-
 
         if(! hasEventListener(PhoenixConstants.NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT,this))
             addEventListener(PhoenixConstants.NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT,this);
 
-
-
-        if (!hasEventListener(PhoenixConstants.SEARCH_EVENT, this)) {
+        if (!hasEventListener(PhoenixConstants.SEARCH_EVENT, this))
             addEventListener(PhoenixConstants.SEARCH_EVENT, this);
-        }
-
-
     }
 
     @Override
@@ -112,7 +92,12 @@ public class ProjectPresenter extends HLCoreFragment<ProjectView> implements HLE
 
     }
 
-    @Override
+    public void filterList(HLObject filterObj) {
+        this.mProjectListAdapter.getFilter().filter(filterObj.getString("android.intent.action.SEARCH"));
+
+    }
+
+        @Override
     protected int getMenuLayout() {
         return 0;
     }

@@ -1,7 +1,10 @@
 package com.homelane.phoenixapp.main.project.overdue;
 
+import android.content.Context;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,7 @@ import com.hl.hlcorelib.orm.HLObject;
 import com.homelane.phoenixapp.PhoenixConstants;
 import com.homelane.phoenixapp.R;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -102,34 +106,42 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
         }
     }
 
+    /**
+     * Function to convert the date from string to Date object
+     * @param dateInString is the date in string format
+     * @return the Date object
+     */
     private Date stringToDate(String dateInString){
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-
         try {
-
             Date date = formatter.parse(dateInString);
             return date;
-
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return null;
     }
 
+    /**
+     * Function to check whether the given date is within the certain range
+     * @param testDate is the date to the checked
+     * @param startDate is the initial starting date range
+     * @param endDate is the final ending date range
+     * @return
+     */
     boolean isWithinRange(Date testDate, Date startDate, Date endDate) {
         return testDate.getTime() >= startDate.getTime() &&
                 testDate.getTime() <= endDate.getTime();
     }
-
 
     /**
      * ViewHolder class loads the views for the Recyler view item.
      */
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
-        public TextView mCustomerName;
-        public TextView mCustomerEmail;
-        public TextView mCustomerMobile;
+        public TextView mTaskName;
+        public TextView mTaskDueDate;
+        public TextView mTaskStatus;
         public TextView mCustomerStatus;
 
         /**
@@ -137,11 +149,19 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
          */
         public ViewHolder(View itemView) {
             super(itemView);
-            mCustomerName = (TextView)itemView.findViewById(R.id.customer_name);
-            mCustomerEmail = (TextView)itemView.findViewById(R.id.customer_email);
-            mCustomerMobile = (TextView)itemView.findViewById(R.id.customer_mobile);
+            mTaskName = (TextView)itemView.findViewById(R.id.customer_name);
+            mTaskDueDate = (TextView)itemView.findViewById(R.id.customer_email);
+            mTaskStatus = (TextView)itemView.findViewById(R.id.customer_mobile);
             mCustomerStatus = (TextView)itemView.findViewById(R.id.customer_status);
-            mCustomerEmail.setVisibility(View.GONE);
+            mCustomerStatus.setVisibility(View.GONE);
+
+            mTaskName.setTypeface(null, Typeface.NORMAL);
+            mTaskName.setPadding(10, 5, 5, 5);
+            mTaskDueDate.setGravity(Gravity.RIGHT);
+            mTaskDueDate.setPadding(10, 5, 5, 5);
+            mTaskStatus.setTypeface(null, Typeface.BOLD);
+            mTaskStatus.setPadding(10,0,0,0);
+
         }
     }
 
@@ -228,9 +248,17 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
     public void onBindViewHolder(final ViewHolder holder, int position) {
         HLObject customer = (HLObject) this.mFilteredProjectList.get(position);
 
-        holder.mCustomerName.setText(customer.getString(PhoenixConstants.Task.TASK_NAME));
-        holder.mCustomerMobile.setText(customer.getString(PhoenixConstants.Task.START_DATE));
-        holder.mCustomerStatus.setText(customer.getString(PhoenixConstants.Task.TASK_STATUS));
+        holder.mTaskName.setText(customer.getString(PhoenixConstants.Task.TASK_NAME));
+        holder.mTaskStatus.setText("Count: "+customer.getInteger(PhoenixConstants.Task.TASK_STATUS));
+
+        try {
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            Date date = format.parse(customer.getString(PhoenixConstants.Task.START_DATE));
+
+            holder.mTaskDueDate.setText(new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").format(date));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 }
