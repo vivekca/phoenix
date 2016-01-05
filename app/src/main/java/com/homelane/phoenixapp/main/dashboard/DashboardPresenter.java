@@ -153,6 +153,7 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
     private void getProjectList(){
         mProjectPresenter = new ProjectPresenter();
         mOverduePresenter = new OverduePresenter();
+        mView.mProgressView.showProgress();
 
         final String baseUrl = HLCoreLib.readProperty(PhoenixConstants.AppConfig.HL_PROJECT_DETAILS_URL);
 
@@ -162,6 +163,7 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     JSONArray projects = jsonObject.getJSONArray("projects");
+                    mView.mProgressView.hideProgress();
 
                     ArrayList<HLObject> projectList = new ArrayList<HLObject>();
                     HashSet<String> taskList = new HashSet<String>();

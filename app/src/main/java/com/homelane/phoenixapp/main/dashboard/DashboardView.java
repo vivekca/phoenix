@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.hl.hlcorelib.mvp.HLView;
 import com.homelane.phoenixapp.R;
+import com.homelane.phoenixapp.views.HLProgressView;
 
 /**
  * Created by hl0395 on 16/12/15.
@@ -18,6 +19,8 @@ public class DashboardView implements HLView {
 
     private View mView;
     public ViewPager mViewPager;
+
+    public HLProgressView mProgressView;
 
     /**
      * Return the enclosing view
@@ -71,6 +74,7 @@ public class DashboardView implements HLView {
     public void init(LayoutInflater inflater, ViewGroup parent) {
         mView = inflater.inflate(R.layout.dashboard_layout, parent, false);
         mViewPager = (ViewPager) mView.findViewById(R.id.viewpager);
+        mProgressView = (HLProgressView)mView.findViewById(R.id.progress_view);
     }
 
 }

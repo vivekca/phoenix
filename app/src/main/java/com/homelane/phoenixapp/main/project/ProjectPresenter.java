@@ -27,7 +27,9 @@ public class ProjectPresenter extends HLCoreFragment<ProjectView> implements HLE
     protected void onBindView() {
         super.onBindView();
 
+
         ArrayList<HLObject> projectList = getArguments().getParcelableArrayList("list");
+
 
         mProjectListAdapter = new ProjectListAdapter();
         mProjectListAdapter.setmDataSet(projectList);

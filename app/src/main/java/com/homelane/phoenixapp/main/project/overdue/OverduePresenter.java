@@ -84,6 +84,7 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> implements HLE
             e.printStackTrace();
         }
 
+        mView.mProgressView.showProgress();
         final String baseUrl = HLCoreLib.readProperty(PhoenixConstants.AppConfig.HL_AGGREGATE_TASK_URL) + "tasks="+
                 str+"&corelationId=123&status=COMPLETED&owners=hltestblrdesigner6@homelane.com";
 
@@ -95,6 +96,7 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> implements HLE
 
                     JSONArray aggregates = jsonObject.getJSONArray("agrRes");
                     ArrayList<HLObject> taskList = new ArrayList();
+                    mView.mProgressView.hideProgress();
 
                     for(int i=0; i<aggregates.length();i++){
                         JSONObject agg = aggregates.getJSONObject(i);

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.hl.hlcorelib.HLProgressInterface;
 import com.hl.hlcorelib.mvp.HLView;
 import com.homelane.phoenixapp.R;
 import com.homelane.phoenixapp.views.HLProgressView;
@@ -17,7 +18,7 @@ import com.homelane.phoenixapp.views.HLProgressView;
 /**
  * Created by hl0395 on 16/12/15.
  */
-public class ProjectView implements HLView {
+public class ProjectView implements HLView{
 
     private View mView;
     RecyclerView mProjectList;
@@ -82,5 +83,6 @@ public class ProjectView implements HLView {
         mProgressView = (HLProgressView) mView.findViewById(R.id.progress_view);
         mErrorText = (TextView) mView.findViewById(R.id.error_display);
     }
+
 
 }
