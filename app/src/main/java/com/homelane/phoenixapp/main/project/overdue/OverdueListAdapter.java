@@ -1,6 +1,7 @@
 package com.homelane.phoenixapp.main.project.overdue;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,10 @@ import com.hl.hlcorelib.orm.HLObject;
 import com.homelane.phoenixapp.PhoenixConstants;
 import com.homelane.phoenixapp.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,7 +26,7 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
 
 
     /**
-     * Constains the raw data
+     * Contains the raw data
      */
     private ArrayList<HLObject> mDataSet;
 
@@ -59,11 +63,12 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
             return results;
         }
 
+
         private boolean listContains(HLObject project, CharSequence query) {
             query = query.toString().trim().toLowerCase();
             String string =(String)query;
             boolean flag= string.contains("/");
-            if(flag == false) {
+            if(!flag) {
                 if (project.getString(PhoenixConstants.Task.TASK_NAME).trim().toLowerCase().contains(query) ||
                         project.getString(PhoenixConstants.Task.START_DATE).toLowerCase().contains(query) ||
                         project.getString(PhoenixConstants.Task.TASK_STATUS).toLowerCase().contains(query)) {
@@ -71,14 +76,22 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
                 }
             }else {
                 String k[]=string.split("/");
-                if(project.getString(PhoenixConstants.Task.TASK_NAME).trim().toLowerCase().
-                        contains(k[0].toLowerCase().trim()) ||
-                        project.getString(PhoenixConstants.Task.START_DATE).trim().contains(k[1] )||
-                        project.getString(PhoenixConstants.Task.TO_DATE).trim().contains(k[2]))
-                return true;
+                if(k.length == 1) {
+                    if (project.getString(PhoenixConstants.Task.TASK_STATUS).trim().toLowerCase().
+                            equals(k[0].toLowerCase().trim()))
+                        return true;
+                }else if(k.length == 3){
+
+                    Date start = stringToDate(k[1]);
+                    Date end = stringToDate(k[2]);
+                    Date taskDate = stringToDate(project.getString(PhoenixConstants.Task.START_DATE));
+
+                    if (project.getString(PhoenixConstants.Task.TASK_STATUS).trim().toLowerCase().
+                            equals(k[0].toLowerCase().trim()) && isWithinRange(taskDate,start,end) )
+                        return true;
+                }
+
             }
-
-
             return false;
         }
 
@@ -87,6 +100,25 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
             OverdueListAdapter.this.mFilteredProjectList.addAll((ArrayList) results.values);
             OverdueListAdapter.this.notifyDataSetChanged();
         }
+    }
+
+    private Date stringToDate(String dateInString){
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+
+        try {
+
+            Date date = formatter.parse(dateInString);
+            return date;
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    boolean isWithinRange(Date testDate, Date startDate, Date endDate) {
+        return testDate.getTime() >= startDate.getTime() &&
+                testDate.getTime() <= endDate.getTime();
     }
 
 
@@ -195,7 +227,6 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         HLObject customer = (HLObject) this.mFilteredProjectList.get(position);
-
 
         holder.mCustomerName.setText(customer.getString(PhoenixConstants.Task.TASK_NAME));
         holder.mCustomerMobile.setText(customer.getString(PhoenixConstants.Task.START_DATE));

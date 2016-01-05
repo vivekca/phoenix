@@ -83,8 +83,12 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
         Bundle bundle=e.getmExtra();
 
         if(e.getType().equals(PhoenixConstants.FILTER_EVENT)) {
-            if(mView.mViewPager.getCurrentItem() == 1)
-                mOverduePresenter.filterList((HLObject)bundle.getParcelable(PhoenixConstants.Task.FILTER));
+            if(mView.mViewPager.getCurrentItem() == 1) {
+                if(bundle != null)
+                    mOverduePresenter.filterList((HLObject) bundle.getParcelable(PhoenixConstants.Task.FILTER));
+                else
+                    mOverduePresenter.filterList(null);
+            }
         }
     }
 
