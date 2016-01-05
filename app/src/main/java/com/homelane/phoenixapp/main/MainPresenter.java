@@ -517,19 +517,12 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         int id = item.getItemId();
 
         if(id == R.id.nav_dashboard) {
-
             navigateTo(DashboardPresenter.class);
             mView.mToolbar.setSubtitle("Dashboard");
         }else if(id == R.id.nav_my_customers) {
-            HLCoreEvent event = new HLCoreEvent(PhoenixConstants.DISABLE_SEARCH_EVENT,
-                    null);
-            HLEventDispatcher.acquire().dispatchEvent(event);
             navigateTo(CustomerPresenter.class);
             mView.mToolbar.setSubtitle("My Customers");
         }else if (id == R.id.nav_share) {
-            HLCoreEvent event = new HLCoreEvent(PhoenixConstants.DISABLE_SEARCH_EVENT,
-                    null);
-            HLEventDispatcher.acquire().dispatchEvent(event);
             openGmailApp();
         }
 
@@ -542,6 +535,9 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
      * @param c is the new presenter class to be navigated
      */
     private void navigateTo(Class c) {
+        HLCoreEvent event = new HLCoreEvent(PhoenixConstants.DISABLE_SEARCH_EVENT,
+                null);
+        HLEventDispatcher.acquire().dispatchEvent(event);
         HLFragmentUtils.HLFragmentTransaction transaction =
                 new HLFragmentUtils.HLFragmentTransaction();
         transaction.mFrameId = R.id.fragment_frame;
