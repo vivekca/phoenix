@@ -79,6 +79,11 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
             }
         });
 
+
+        if (!hasEventListener(PhoenixConstants.SEARCH_EVENT, this)) {
+            addEventListener(PhoenixConstants.SEARCH_EVENT, this);
+        }
+
         if(!hasEventListener(PhoenixConstants.FILTER_EVENT, this))
             addEventListener(PhoenixConstants.FILTER_EVENT, this);
 
@@ -112,6 +117,20 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
                     mOverduePresenter.filterList((HLObject) bundle.getParcelable(PhoenixConstants.Task.FILTER));
                 else
                     mOverduePresenter.filterList(null);
+            }
+        }else if (e.getType().equals(PhoenixConstants.SEARCH_EVENT)) {
+            SearchEvent searchEvent = (SearchEvent) hlEvent;
+            if ((searchEvent.getmCategory() == 2)) {
+                if(mView.mViewPager.getCurrentItem() == 0) {
+                    this.mProjectPresenter.searchList(searchEvent.getmExtra().getString("android.intent.action.SEARCH"));
+                }
+                else if(mView.mViewPager.getCurrentItem() == 2) {
+                    this.mOverduePresenter.searchList(searchEvent.getmExtra().getString("android.intent.action.SEARCH"));
+                }else{
+                    this.mOverduePresenter.searchList(searchEvent.getmExtra().getString("android.intent.action.SEARCH"));
+
+
+                }
             }
         }
     }

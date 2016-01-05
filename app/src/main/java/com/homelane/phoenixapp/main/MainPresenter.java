@@ -280,7 +280,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
                 if (mView.mDrawerLayout.isDrawerOpen(GravityCompat.END))
                     mView.mDrawerLayout.closeDrawer(GravityCompat.END);
 
-                HLCoreEvent event = new HLCoreEvent(PhoenixConstants.FILTER_EVENT, new Bundle());
+                HLCoreEvent event = new HLCoreEvent(PhoenixConstants.FILTER_EVENT,null);
                 HLEventDispatcher.acquire().dispatchEvent(event);
 
             }
