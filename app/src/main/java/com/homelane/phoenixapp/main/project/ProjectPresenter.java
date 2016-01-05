@@ -10,6 +10,7 @@ import com.hl.hlcorelib.mvp.presenters.HLCoreFragment;
 import com.hl.hlcorelib.orm.HLObject;
 import com.homelane.phoenixapp.PhoenixConstants;
 import com.homelane.phoenixapp.SearchEvent;
+import com.homelane.phoenixapp.main.MainPresenter;
 
 import java.util.ArrayList;
 
@@ -55,6 +56,7 @@ public class ProjectPresenter extends HLCoreFragment<ProjectView> implements HLE
             mView.mErrorText.setText("No projects found.");
 
         }
+
 
 
         if(! hasEventListener(PhoenixConstants.NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT,this))

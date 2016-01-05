@@ -90,6 +90,7 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> implements HLE
         if (!hasEventListener(PhoenixConstants.SEARCH_EVENT, this)) {
             addEventListener(PhoenixConstants.SEARCH_EVENT, this);
         }
+
         if (!hasEventListener(PhoenixConstants.FILTER_EVENT, this)) {
             addEventListener(PhoenixConstants.FILTER_EVENT, this);
         }

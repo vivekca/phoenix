@@ -1,6 +1,7 @@
 package com.homelane.phoenixapp.main.dashboard;
 
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -17,6 +18,7 @@ import com.hl.hlcorelib.mvp.presenters.HLCoreFragment;
 import com.hl.hlcorelib.orm.HLObject;
 import com.hl.hlcorelib.utils.HLNetworkUtils;
 import com.homelane.phoenixapp.PhoenixConstants;
+import com.homelane.phoenixapp.SearchEvent;
 import com.homelane.phoenixapp.main.MainPresenter;
 import com.homelane.phoenixapp.main.project.ProjectPresenter;
 import com.homelane.phoenixapp.main.project.overdue.OverduePresenter;
@@ -54,6 +56,28 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
                     bundle);
             HLEventDispatcher.acquire().dispatchEvent(event);
         }
+
+        mView.mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                HLCoreEvent event = new HLCoreEvent(PhoenixConstants.DISABLE_SEARCH_EVENT,
+                        null);
+                HLEventDispatcher.acquire().dispatchEvent(event);
+
+
+
+            }
+        });
 
         if(!hasEventListener(PhoenixConstants.FILTER_EVENT, this))
             addEventListener(PhoenixConstants.FILTER_EVENT, this);
