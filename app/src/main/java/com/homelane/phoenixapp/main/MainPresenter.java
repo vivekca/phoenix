@@ -19,7 +19,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.SearchView;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -153,17 +152,21 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         if(e.getType().equals(PhoenixConstants.SNACKBAR_DISPLAY_EVENT))
             showSnackBar(bundle.getString(PhoenixConstants.SNACKBAR_DISPLAY_MESSAGE));
         else if(e.getType().equals(PhoenixConstants.SELECTED_DATE_EVENT)){
+            String day = bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY).length() == 1 ?
+                    "0" + bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY) : bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY);
+            String month = bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH).length() == 1 ?
+                    "0" + bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH) : bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH);
+
+
             if(isFromDateSelected) {
-                mFromDate.setText(bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY) + "-" +
-                        bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH) + "-" +
+                mFromDate.setText(day + "-" + month + "-" +
                                 bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR));
                 mFromValue =bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY)+"-"+ bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH)+"-"+ bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR);
             }else {
-                mToDate.setText(bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY) + "-" +
-                        bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH) + "-" +
+                mToDate.setText(day + "-" + month + "-" +
                                 bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR));
 
-                mToValue =bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY)+"-"+ bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH)+"-"+ bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR);
+                mToValue = day+"-"+ month +"-"+ bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR);
 
             }
         }else if(e.getType().equals(PhoenixConstants.DISABLE_SEARCH_EVENT)){
@@ -215,7 +218,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
     Button mFilterButton;
     ImageView mCancelButton;
     TextView mDate;
-    String spinneritem;
+    String mSelectedStatus;
     TextView mStatus;
 
 
@@ -257,7 +260,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String spinnerValue = spinnerItems.get(position);
-                spinneritem = spinnerValue;
+                mSelectedStatus = spinnerValue;
 
             }
 
@@ -271,37 +274,46 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
             public void onClick(View v) {
                 mCardView.setVisibility(View.GONE);
                 spinner.setSelection(0);
-                mFromDate.setText("Select the Date");
-                mToDate.setText("Select the Date");
+                mFromDate.setText(getString(R.string.select_date));
+                mToDate.setText(getString(R.string.select_date));
+
+                if (mView.mDrawerLayout.isDrawerOpen(GravityCompat.END))
+                    mView.mDrawerLayout.closeDrawer(GravityCompat.END);
+
+                HLCoreEvent event = new HLCoreEvent(PhoenixConstants.FILTER_EVENT, new Bundle());
+                HLEventDispatcher.acquire().dispatchEvent(event);
 
             }
         });
 
+        mFromDate.setText(getString(R.string.select_date));
+        mToDate.setText(getString(R.string.select_date));
 
         mFilterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mCardView.setVisibility(View.VISIBLE);
-                mStatus.setText(spinneritem);
+                mStatus.setText(mSelectedStatus);
 
-                if(mFromDate.getText() == "Select the Date")
+                if(mFromDate.getText().equals(getString(R.string.select_date)))
                     mDate.setVisibility(View.GONE);
                 else {
                     mDate.setVisibility(View.VISIBLE);
-                    mDate.setText(mFromDate.getText() + " - " + mToDate.getText());
+                    mDate.setText(mFromDate.getText() + " <=> " + mToDate.getText());
                 }
 
                 HLObject task = new HLObject(PhoenixConstants.Task.TASK_NAME);
-                task.put(PhoenixConstants.Task.TASK_STATUS, spinneritem);
+                task.put(PhoenixConstants.Task.TASK_STATUS, mSelectedStatus);
                 task.put(PhoenixConstants.Task.START_DATE, (String) mFromDate.getText());
                 task.put(PhoenixConstants.Task.TO_DATE, (String) mToDate.getText());
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(PhoenixConstants.Task.FILTER, task);
 
-                /*   HLCoreEvent event = new HLCoreEvent(PhoenixConstants.FILTER_EVENT, bundle);
-                HLEventDispatcher.acquire().dispatchEvent(event);*/
+                HLCoreEvent event = new HLCoreEvent(PhoenixConstants.FILTER_EVENT, bundle);
+                HLEventDispatcher.acquire().dispatchEvent(event);
 
-
+                if (mView.mDrawerLayout.isDrawerOpen(GravityCompat.END))
+                    mView.mDrawerLayout.closeDrawer(GravityCompat.END);
             }
         });
 
@@ -310,17 +322,11 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
             @Override
             public void onClick(View v) {
                 isFromDateSelected = true;
-                DialogFragment newFragment = new DatePickerFragment();
+                final DialogFragment newFragment = new DatePickerFragment();
                 Bundle bundle = new Bundle();
                 bundle.putBoolean(PhoenixConstants.Task.TASK_FLAG,isFromDateSelected);
                 newFragment.setArguments(bundle);
                 newFragment.show(getFragmentManager(), MainPresenter.class.getName());
-
-
-
-
-
-
             }
         });
 
@@ -328,13 +334,12 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
             @Override
             public void onClick(View v) {
                 isFromDateSelected = false;
-                DialogFragment newFragment = new DatePickerFragment();
+                final DialogFragment newFragment = new DatePickerFragment();
                 Bundle bundle = new Bundle();
                 bundle.putBoolean(PhoenixConstants.Task.TASK_FLAG,isFromDateSelected);
                 bundle.putString(PhoenixConstants.Task.START_DATE, (String) mFromDate.getText());
                 newFragment.setArguments(bundle);
                 newFragment.show(getFragmentManager(), MainPresenter.class.getName());
-
             }
         });
 
@@ -358,11 +363,10 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        }else if (drawer.isDrawerOpen(GravityCompat.END)) {
-            drawer.closeDrawer(GravityCompat.END);
+        if (mView.mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mView.mDrawerLayout.closeDrawer(GravityCompat.START);
+        }else if (mView.mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+            mView.mDrawerLayout.closeDrawer(GravityCompat.END);
         }
         else {
 

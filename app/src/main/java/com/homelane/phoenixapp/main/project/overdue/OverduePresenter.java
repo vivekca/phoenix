@@ -9,6 +9,7 @@ import com.hl.hlcorelib.mvp.events.HLEventListener;
 import com.hl.hlcorelib.mvp.presenters.HLCoreFragment;
 import com.hl.hlcorelib.orm.HLObject;
 import com.homelane.phoenixapp.PhoenixConstants;
+import com.homelane.phoenixapp.R;
 import com.homelane.phoenixapp.SearchEvent;
 
 import java.util.ArrayList;
@@ -30,21 +31,21 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> implements HLE
         HLObject task = new HLObject(PhoenixConstants.Task.TASK_NAME);
         task.put(PhoenixConstants.Task.TASK_NAME,"dsdss");
         task.put(PhoenixConstants.Task.START_DATE,"12-04-2015");
-        task.put(PhoenixConstants.Task.TASK_STATUS, "To send Initial code");
+        task.put(PhoenixConstants.Task.TASK_STATUS, "To send Initial Quote");
         arrayList.add(task);
 
         HLObject task1 = new HLObject(PhoenixConstants.Task.TASK_NAME);
 
         task1.put(PhoenixConstants.Task.TASK_NAME,"dsdsszczc");
         task1.put(PhoenixConstants.Task.START_DATE,"12-05-2015");
-        task1.put(PhoenixConstants.Task.TASK_STATUS, "To send Initial code");
+        task1.put(PhoenixConstants.Task.TASK_STATUS, "Initial Quote Sent");
         arrayList.add(task1);
 
         HLObject task2 = new HLObject(PhoenixConstants.Task.TASK_NAME);
 
         task2.put(PhoenixConstants.Task.TASK_NAME,"cvvzv");
         task2.put(PhoenixConstants.Task.START_DATE,"12-08-2015");
-        task2.put(PhoenixConstants.Task.TASK_STATUS, "To send Initial code");
+        task2.put(PhoenixConstants.Task.TASK_STATUS, "Initial Quote Sent");
 
 
         arrayList.add(task2);
@@ -53,7 +54,7 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> implements HLE
 
         task3.put(PhoenixConstants.Task.TASK_NAME,"dsdsszxcsc");
         task3.put(PhoenixConstants.Task.START_DATE,"12-10-2015");
-        task3.put(PhoenixConstants.Task.TASK_STATUS, "initial  quote approved");
+        task3.put(PhoenixConstants.Task.TASK_STATUS, "Initial Quote Approved");
 
         arrayList.add(task3);
 
@@ -61,7 +62,7 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> implements HLE
 
         task4.put(PhoenixConstants.Task.TASK_NAME,"33cxz");
         task4.put(PhoenixConstants.Task.START_DATE,"12-11-2015");
-        task4.put(PhoenixConstants.Task.TASK_STATUS, "initial  quote approved");
+        task4.put(PhoenixConstants.Task.TASK_STATUS, "Initial Quote - Requested For Rev");
 
         arrayList.add(task4);
 
@@ -69,7 +70,7 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> implements HLE
 
         task5.put(PhoenixConstants.Task.TASK_NAME,"cxzcz");
         task5.put(PhoenixConstants.Task.START_DATE,"12-12-2015");
-        task5.put(PhoenixConstants.Task.TASK_STATUS, "initial quote send");
+        task5.put(PhoenixConstants.Task.TASK_STATUS, "Initial Quote - Requested For Rev");
 
         arrayList.add(task5);
 
@@ -107,22 +108,25 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> implements HLE
                 this.mOverDueListAdapter.getFilter().filter(
                         searchEvent.getmExtra().getString("android.intent.action.SEARCH"));
             }
-        }else if(e.getType().equals(PhoenixConstants.FILTER_EVENT)){
-            HLObject task = bundle.getParcelable(PhoenixConstants.Task.FILTER);
+        }
+    }
 
-            if(task.getString(PhoenixConstants.Task.START_DATE) != "Select the Date" &&
-                    task.getString(PhoenixConstants.Task.TO_DATE) != "Select the Date" ) {
+    public void filterList(HLObject filterObj){
+        if(filterObj != null) {
+            if (!filterObj.getString(PhoenixConstants.Task.START_DATE).equals(getString(R.string.select_date)) &&
+                    !filterObj.getString(PhoenixConstants.Task.TO_DATE).equals(getString(R.string.select_date))) {
 
-                String status = task.getString(PhoenixConstants.Task.TASK_NAME) + "/" +
-                        task.getString(PhoenixConstants.Task.START_DATE) + "/" +
-                        task.getString(PhoenixConstants.Task.TO_DATE);
+                String status = filterObj.getString(PhoenixConstants.Task.TASK_STATUS) + "/" +
+                        filterObj.getString(PhoenixConstants.Task.START_DATE) + "/" +
+                        filterObj.getString(PhoenixConstants.Task.TO_DATE);
                 this.mOverDueListAdapter.getFilter().filter(status);
-            }else{
-                String status = task.getString(PhoenixConstants.Task.TASK_NAME) + "/" ;
+            } else {
+                String status = filterObj.getString(PhoenixConstants.Task.TASK_STATUS) + "/";
                 this.mOverDueListAdapter.getFilter().filter(status);
             }
-
-
+        }else{
+            this.mOverDueListAdapter.getFilter().filter("");
+            this.mOverDueListAdapter.notifyDataSetChanged();
         }
 
     }

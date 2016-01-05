@@ -11,7 +11,9 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.hl.hlcorelib.HLCoreLib;
 import com.hl.hlcorelib.mvp.events.HLCoreEvent;
+import com.hl.hlcorelib.mvp.events.HLEvent;
 import com.hl.hlcorelib.mvp.events.HLEventDispatcher;
+import com.hl.hlcorelib.mvp.events.HLEventListener;
 import com.hl.hlcorelib.mvp.presenters.HLCoreFragment;
 import com.hl.hlcorelib.orm.HLObject;
 import com.hl.hlcorelib.utils.HLNetworkUtils;
@@ -29,7 +31,7 @@ import java.util.ArrayList;
 /**
  * Created by hl0395 on 16/12/15.
  */
-public class DashboardPresenter extends HLCoreFragment<DashboardView> {
+public class DashboardPresenter extends HLCoreFragment<DashboardView> implements HLEventListener {
 
     /**
      * RequestQueue for volley
@@ -55,8 +57,6 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> {
             HLEventDispatcher.acquire().dispatchEvent(event);
         }
 
-
-
         mView.mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -78,16 +78,9 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> {
 
             }
         });
-/*
 
-
-        setupViewPager();
-        ((MainPresenter)getActivity()).getTabLayout().setupWithViewPager(mView.mViewPager);
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("list", new ArrayList<Parcelable>());
-        mProjectPresenter.setArguments(bundle);
-*/
-
+        if(!hasEventListener(PhoenixConstants.FILTER_EVENT, this))
+            addEventListener(PhoenixConstants.FILTER_EVENT, this);
 
     }
 
@@ -106,6 +99,21 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> {
         adapter.addFragment(mOverduePresenter, "Overdue Tasks");
         adapter.addFragment(new OverduePresenter(), "Pending Tasks");
         mView.mViewPager.setAdapter(adapter);
+    }
+
+    @Override
+    public void onEvent(HLEvent hlEvent) {
+        HLCoreEvent e = (HLCoreEvent)hlEvent;
+        Bundle bundle=e.getmExtra();
+
+        if(e.getType().equals(PhoenixConstants.FILTER_EVENT)) {
+            if(mView.mViewPager.getCurrentItem() == 1) {
+                if(bundle != null)
+                    mOverduePresenter.filterList((HLObject) bundle.getParcelable(PhoenixConstants.Task.FILTER));
+                else
+                    mOverduePresenter.filterList(null);
+            }
+        }
     }
 
     private void getProjectList(){
