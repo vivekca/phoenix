@@ -97,24 +97,24 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
                 .build();
 
 
-         HLFragmentUtils.HLFragmentTransaction transaction =
-                 new HLFragmentUtils.HLFragmentTransaction();
-         transaction.isRoot = true;
-         transaction.mFrameId = R.id.fragment_frame;
-         transaction.mFragmentClass = DashboardPresenter.class;
-         push(transaction);
+        HLFragmentUtils.HLFragmentTransaction transaction =
+                new HLFragmentUtils.HLFragmentTransaction();
+        transaction.isRoot = true;
+        transaction.mFrameId = R.id.fragment_frame;
+        transaction.mFragmentClass = DashboardPresenter.class;
+        push(transaction);
 
-        if(!hasEventListener(PhoenixConstants.SNACKBAR_DISPLAY_EVENT,this))
-            addEventListener(PhoenixConstants.SNACKBAR_DISPLAY_EVENT,this);
+        if (!hasEventListener(PhoenixConstants.SNACKBAR_DISPLAY_EVENT, this))
+            addEventListener(PhoenixConstants.SNACKBAR_DISPLAY_EVENT, this);
 
-        if(!hasEventListener(PhoenixConstants.DISABLE_SEARCH_EVENT,this))
-            addEventListener(PhoenixConstants.DISABLE_SEARCH_EVENT,this);
+        if (!hasEventListener(PhoenixConstants.DISABLE_SEARCH_EVENT, this))
+            addEventListener(PhoenixConstants.DISABLE_SEARCH_EVENT, this);
 
-        if(!hasEventListener(PhoenixConstants.SELECTED_DATE_EVENT,this))
-            addEventListener(PhoenixConstants.SELECTED_DATE_EVENT,this);
+        if (!hasEventListener(PhoenixConstants.SELECTED_DATE_EVENT, this))
+            addEventListener(PhoenixConstants.SELECTED_DATE_EVENT, this);
 
-        if(!hasEventListener(PhoenixConstants.DISABLE_FILTER_EVENT,this))
-            addEventListener(PhoenixConstants.DISABLE_FILTER_EVENT,this);
+        if (!hasEventListener(PhoenixConstants.DISABLE_FILTER_EVENT, this))
+            addEventListener(PhoenixConstants.DISABLE_FILTER_EVENT, this);
 
 
         setNavigationItemSelection(1);
@@ -149,12 +149,12 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
 
     @Override
     public void onEvent(HLEvent hlEvent) {
-        HLCoreEvent e = (HLCoreEvent)hlEvent;
-        Bundle bundle=e.getmExtra();
+        HLCoreEvent e = (HLCoreEvent) hlEvent;
+        Bundle bundle = e.getmExtra();
 
-        if(e.getType().equals(PhoenixConstants.SNACKBAR_DISPLAY_EVENT))
+        if (e.getType().equals(PhoenixConstants.SNACKBAR_DISPLAY_EVENT))
             showSnackBar(bundle.getString(PhoenixConstants.SNACKBAR_DISPLAY_MESSAGE));
-        else if(e.getType().equals(PhoenixConstants.SELECTED_DATE_EVENT)){
+        else if (e.getType().equals(PhoenixConstants.SELECTED_DATE_EVENT)) {
             String day = bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY).length() == 1 ?
                     "0" + bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY) :
                     bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY);
@@ -163,36 +163,36 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
                     bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH);
 
 
-            if(isFromDateSelected) {
+            if (isFromDateSelected) {
                 mFromDate.setText(day + "-" + month + "-" +
-                                bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR));
-                mFromValue =bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY)+"-"+
-                        bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH)+"-"+
+                        bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR));
+                mFromValue = bundle.getString(PhoenixConstants.DatePicker.SELECTED_DAY) + "-" +
+                        bundle.getString(PhoenixConstants.DatePicker.SELECTED_MONTH) + "-" +
                         bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR);
-            }else {
+            } else {
                 mToDate.setText(day + "-" + month + "-" +
-                                bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR));
+                        bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR));
 
-                mToValue = day+"-"+ month +"-"+ bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR);
+                mToValue = day + "-" + month + "-" + bundle.getString(PhoenixConstants.DatePicker.SELECTED_YEAR);
 
             }
-        }else if(e.getType().equals(PhoenixConstants.DISABLE_SEARCH_EVENT))
+        } else if (e.getType().equals(PhoenixConstants.DISABLE_SEARCH_EVENT))
             searchView.setIconified(true);
-        else if(e.getType().equals(PhoenixConstants.DISABLE_FILTER_EVENT)){
+        else if (e.getType().equals(PhoenixConstants.DISABLE_FILTER_EVENT)) {
             isFilterVisible = bundle.getBoolean(PhoenixConstants.FILTER_STATUS);
             supportInvalidateOptionsMenu();
         }
-
 
 
     }
 
     /**
      * Function to change the visiblity of the tab bar
+     *
      * @param isVisible true will make the tab layout visible else not
      */
-    public void setTabVisible(boolean isVisible){
-        if(isVisible)
+    public void setTabVisible(boolean isVisible) {
+        if (isVisible)
             mView.mTabLayout.setVisibility(View.VISIBLE);
         else
             mView.mTabLayout.setVisibility(View.GONE);
@@ -200,9 +200,10 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
 
     /**
      * Getter method for the tab layout
+     *
      * @return tab layout
      */
-    public TabLayout getTabLayout(){
+    public TabLayout getTabLayout() {
         return mView.mTabLayout;
     }
 
@@ -221,7 +222,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         userName.setText(LoginPresenter.mGoogleAccount.getDisplayName());
         userEmail.setText(LoginPresenter.mGoogleAccount.getEmail());
 
-        if(LoginPresenter.mGoogleAccount.getPhotoUrl() != null)
+        if (LoginPresenter.mGoogleAccount.getPhotoUrl() != null)
             imageView.loadImageURL(LoginPresenter.mGoogleAccount.getPhotoUrl().toString());
     }
 
@@ -242,11 +243,11 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         View headerView = LayoutInflater.from(this).inflate(R.layout.filter_layout, mView.mRightNavigationView);
         mFromDate = (TextView) headerView.findViewById(R.id.start_date);
         mToDate = (TextView) headerView.findViewById(R.id.end_date);
-        mCardView = (CardView)headerView.findViewById(R.id.filter_cardView);
-        mFilterButton = (Button)headerView.findViewById(R.id.filter_button);
-        mCancelButton = (ImageView)headerView.findViewById(R.id.cancel_image);
-        mDate = (TextView)headerView.findViewById(R.id.date);
-        mStatus = (TextView)headerView.findViewById(R.id.task_status);
+        mCardView = (CardView) headerView.findViewById(R.id.filter_cardView);
+        mFilterButton = (Button) headerView.findViewById(R.id.filter_button);
+        mCancelButton = (ImageView) headerView.findViewById(R.id.cancel_image);
+        mDate = (TextView) headerView.findViewById(R.id.date);
+        mStatus = (TextView) headerView.findViewById(R.id.task_status);
 
         final Calendar calendar = Calendar.getInstance();
 
@@ -260,8 +261,8 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         spinnerItems.add("Initial Quote - Revision Sent");
         spinnerItems.add("Initial Quote - Revision Approved");
 
-        ArrayAdapter<String> stringArrayAdapter =new ArrayAdapter<String>(
-                this,android.R.layout.simple_spinner_item,spinnerItems);
+        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(
+                this, android.R.layout.simple_spinner_item, spinnerItems);
         stringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(stringArrayAdapter);
         mFromDate.setText(getString(R.string.select_date));
@@ -291,7 +292,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
                 if (mView.mDrawerLayout.isDrawerOpen(GravityCompat.END))
                     mView.mDrawerLayout.closeDrawer(GravityCompat.END);
 
-                HLCoreEvent event = new HLCoreEvent(PhoenixConstants.FILTER_EVENT,null);
+                HLCoreEvent event = new HLCoreEvent(PhoenixConstants.FILTER_EVENT, null);
                 HLEventDispatcher.acquire().dispatchEvent(event);
 
             }
@@ -306,7 +307,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
                 mCardView.setVisibility(View.VISIBLE);
                 mStatus.setText(mSelectedStatus);
 
-                if(mFromDate.getText().equals(getString(R.string.select_date)))
+                if (mFromDate.getText().equals(getString(R.string.select_date)))
                     mDate.setVisibility(View.GONE);
                 else {
                     mDate.setVisibility(View.VISIBLE);
@@ -335,7 +336,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
                 isFromDateSelected = true;
                 final DialogFragment newFragment = new DatePickerFragment();
                 Bundle bundle = new Bundle();
-                bundle.putBoolean(PhoenixConstants.Task.TASK_FLAG,isFromDateSelected);
+                bundle.putBoolean(PhoenixConstants.Task.TASK_FLAG, isFromDateSelected);
                 newFragment.setArguments(bundle);
                 newFragment.show(getFragmentManager(), MainPresenter.class.getName());
             }
@@ -347,7 +348,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
                 isFromDateSelected = false;
                 final DialogFragment newFragment = new DatePickerFragment();
                 Bundle bundle = new Bundle();
-                bundle.putBoolean(PhoenixConstants.Task.TASK_FLAG,isFromDateSelected);
+                bundle.putBoolean(PhoenixConstants.Task.TASK_FLAG, isFromDateSelected);
                 bundle.putString(PhoenixConstants.Task.START_DATE, (String) mFromDate.getText());
                 newFragment.setArguments(bundle);
                 newFragment.show(getFragmentManager(), MainPresenter.class.getName());
@@ -363,11 +364,12 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
 
     /**
      * Fuction to show the snack bar
+     *
      * @param message to the displayed in the snack bar
      */
-    private void showSnackBar(String message){
+    private void showSnackBar(String message) {
 
-        Snackbar.make(mView.mDrawerLayout,message,Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(mView.mDrawerLayout, message, Snackbar.LENGTH_SHORT).show();
     }
 
     boolean doubleBackToExitPressedOnce = false;
@@ -376,16 +378,14 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
     public void onBackPressed() {
         if (mView.mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mView.mDrawerLayout.closeDrawer(GravityCompat.START);
-        }else if (mView.mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+        } else if (mView.mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
             mView.mDrawerLayout.closeDrawer(GravityCompat.END);
-        }
-        else {
+        } else {
 
-            if(getSupportFragmentManager().getBackStackEntryCount() > 1) {
+            if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
                 setNavigationItemSelection(getSupportFragmentManager().getBackStackEntryCount() - 1);
                 super.onBackPressed();
-            }
-            else {
+            } else {
 
                 if (doubleBackToExitPressedOnce) {
                     super.onBackPressed();
@@ -412,7 +412,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-       searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager
                 .getSearchableInfo(getComponentName()));
@@ -426,7 +426,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
             @Override
             public boolean onQueryTextChange(String newText) {
 
-                if(newText != null) {
+                if (newText != null) {
                     final Bundle data = new Bundle();
                     data.putString(Intent.ACTION_SEARCH, newText);
                     final SearchEvent searchEvent = new SearchEvent(PhoenixConstants.SEARCH_EVENT, data,
@@ -444,7 +444,6 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
     }
 
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -452,9 +451,8 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         if (id == R.id.action_logout) {
             signOut();
             return false;
-        }else if(id == R.id.action_filter)
+        } else if (id == R.id.action_filter)
             mView.mDrawerLayout.openDrawer(GravityCompat.END);
-
 
 
         return super.onOptionsItemSelected(item);
@@ -477,6 +475,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
 
     /**
      * Function that fetches the mobile manufacturer and mocel
+     *
      * @return the manufacturer and mocel
      */
     public String getDeviceName() {
@@ -492,6 +491,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
 
     /**
      * Function to convert the string to uppercase
+     *
      * @param s is the input string to the converted to uppercase
      * @return the uppercase converted string
      */
@@ -507,8 +507,8 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         }
     }
 
-    private void setNavigationItemSelection(int position){
-        switch (position){
+    private void setNavigationItemSelection(int position) {
+        switch (position) {
             case 1:
                 mView.mLeftNavigationView.setCheckedItem(R.id.nav_dashboard);
                 mView.mToolbar.setSubtitle("Dashboard");
@@ -545,7 +545,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.id.action_filter);
 
-        if(isFilterVisible)
+        if (isFilterVisible)
             item.setEnabled(true);
         else
             item.setEnabled(false);
@@ -559,13 +559,13 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if(id == R.id.nav_dashboard) {
+        if (id == R.id.nav_dashboard) {
             navigateTo(DashboardPresenter.class);
             mView.mToolbar.setSubtitle("Dashboard");
-        }else if(id == R.id.nav_my_customers) {
+        } else if (id == R.id.nav_my_customers) {
             navigateTo(CustomerPresenter.class);
             mView.mToolbar.setSubtitle("My Customers");
-        }else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_share) {
             openGmailApp();
         }
 
@@ -575,6 +575,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
 
     /**
      * Function that navigates to the new presenter
+     *
      * @param c is the new presenter class to be navigated
      */
     private void navigateTo(Class c) {
@@ -592,20 +593,20 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
      * Function that collects the mobile details like os, model etc and launches
      * the gmail app to send feedback to the developers
      */
-    private void openGmailApp(){
-        Spanned text = Html.fromHtml("Android OS Version: "+android.os.Build.VERSION.SDK_INT+"<br>"+
-                "Device Information: "+getDeviceName()+"<br>");
+    private void openGmailApp() {
+        Spanned text = Html.fromHtml("Android OS Version: " + android.os.Build.VERSION.SDK_INT + "<br>" +
+                "Device Information: " + getDeviceName() + "<br>");
 
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
-        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{ "rajesh.c@homelane.com," +
-                "vivek.c@homelane.com,","sunil.a@homelane.com","bhanuprasad.m@homelane.com","vinith.k@homelane.com"});
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"rajesh.c@homelane.com," +
+                "vivek.c@homelane.com,", "sunil.a@homelane.com", "bhanuprasad.m@homelane.com", "vinith.k@homelane.com"});
         emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Feedback for Mobile Phoenix app");
         emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, text);
         emailIntent.setType("text/plain");
         final PackageManager pm = getPackageManager();
         final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
         ResolveInfo best = null;
-        for(final ResolveInfo info : matches)
+        for (final ResolveInfo info : matches)
             if (info.activityInfo.packageName.endsWith(".gm") || info.activityInfo.name.toLowerCase().contains("gmail"))
                 best = info;
         if (best != null)

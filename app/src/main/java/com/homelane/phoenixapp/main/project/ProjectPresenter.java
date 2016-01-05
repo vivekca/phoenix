@@ -21,7 +21,7 @@ public class ProjectPresenter extends HLCoreFragment<ProjectView> implements HLE
 
     ProjectListAdapter mProjectListAdapter;
 
-    boolean mEmptyFlag=true;
+    boolean mEmptyFlag = true;
 
     @Override
     protected void onBindView() {
@@ -36,21 +36,19 @@ public class ProjectPresenter extends HLCoreFragment<ProjectView> implements HLE
 
         mView.mProjectList.setAdapter(mProjectListAdapter);
 
-        if(projectList.size() > 0) {
+        if (projectList.size() > 0) {
             mView.mProjectList.setVisibility(View.VISIBLE);
             mView.mErrorText.setVisibility(View.GONE);
-        }else{
+        } else {
 
             mView.mProjectList.setVisibility(View.GONE);
             mView.mErrorText.setVisibility(View.VISIBLE);
             mView.mErrorText.setText("No projects found.");
         }
 
-        if(! hasEventListener(PhoenixConstants.NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT,this))
-            addEventListener(PhoenixConstants.NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT,this);
+        if (!hasEventListener(PhoenixConstants.NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT, this))
+            addEventListener(PhoenixConstants.NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT, this);
 
-        if (!hasEventListener(PhoenixConstants.SEARCH_EVENT, this))
-            addEventListener(PhoenixConstants.SEARCH_EVENT, this);
     }
 
     @Override
@@ -74,10 +72,10 @@ public class ProjectPresenter extends HLCoreFragment<ProjectView> implements HLE
 
     @Override
     public void onEvent(HLEvent hlEvent) {
-        HLCoreEvent e = (HLCoreEvent)hlEvent;
-        Bundle bundle=e.getmExtra();
+        HLCoreEvent e = (HLCoreEvent) hlEvent;
+        Bundle bundle = e.getmExtra();
 
-        if(e.getType().equals(PhoenixConstants.NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT)) {
+        if (e.getType().equals(PhoenixConstants.NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT)) {
 //            HLFragmentUtils.HLFragmentTransaction transaction =
 //                    new HLFragmentUtils.HLFragmentTransaction();
 //            transaction.mFrameId = R.id.fragment_frame;
@@ -88,7 +86,7 @@ public class ProjectPresenter extends HLCoreFragment<ProjectView> implements HLE
 
     }
 
-    public void searchList(String query){
+    public void searchList(String query) {
         this.mProjectListAdapter.getFilter().filter(
                 query);
 

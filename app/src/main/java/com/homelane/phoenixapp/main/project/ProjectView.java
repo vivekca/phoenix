@@ -18,7 +18,7 @@ import com.homelane.phoenixapp.views.HLProgressView;
 /**
  * Created by hl0395 on 16/12/15.
  */
-public class ProjectView implements HLView{
+public class ProjectView implements HLView {
 
     private View mView;
     RecyclerView mProjectList;

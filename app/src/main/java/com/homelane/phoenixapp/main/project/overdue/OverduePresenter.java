@@ -50,9 +50,9 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> implements HLE
 
         volleyReqQueue = Volley.newRequestQueue(getActivity());
 
-        if(HLNetworkUtils.isNetworkAvailable(getActivity()))
+        if (HLNetworkUtils.isNetworkAvailable(getActivity()))
             getOverDueTasks();
-        else{
+        else {
             Bundle bundle = new Bundle();
             bundle.putString(PhoenixConstants.SNACKBAR_DISPLAY_MESSAGE, "Please check your internet connection");
 
@@ -60,33 +60,24 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> implements HLE
                     bundle);
             HLEventDispatcher.acquire().dispatchEvent(event);
         }
-
-        if (!hasEventListener(PhoenixConstants.SEARCH_EVENT, this)) {
-            addEventListener(PhoenixConstants.SEARCH_EVENT, this);
-        }
-
-        if (!hasEventListener(PhoenixConstants.FILTER_EVENT, this)) {
-            addEventListener(PhoenixConstants.FILTER_EVENT, this);
-        }
-
     }
 
     private void getOverDueTasks() {
         ArrayList<String> overdueList = getArguments().getStringArrayList("list");
-        String str="";
+        String str = "";
 
-        for (String s: overdueList)
+        for (String s : overdueList)
             str = str + s + ",";
 
         try {
             str = java.net.URLEncoder.encode(str, "UTF-8");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         mView.mProgressView.showProgress();
-        final String baseUrl = HLCoreLib.readProperty(PhoenixConstants.AppConfig.HL_AGGREGATE_TASK_URL) + "tasks="+
-                str+"&corelationId=123&status=COMPLETED&owners=hltestblrdesigner6@homelane.com";
+        final String baseUrl = HLCoreLib.readProperty(PhoenixConstants.AppConfig.HL_AGGREGATE_TASK_URL) + "tasks=" +
+                str + "&corelationId=123&status=COMPLETED&owners=hltestblrdesigner6@homelane.com";
 
         StringRequest request = new StringRequest(Request.Method.GET, baseUrl, new Response.Listener<String>() {
             @Override
@@ -98,15 +89,15 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> implements HLE
                     ArrayList<HLObject> taskList = new ArrayList();
                     mView.mProgressView.hideProgress();
 
-                    for(int i=0; i<aggregates.length();i++){
+                    for (int i = 0; i < aggregates.length(); i++) {
                         JSONObject agg = aggregates.getJSONObject(i);
 
                         JSONArray tasks = agg.getJSONArray("tasks");
 
-                        for(int j=0; j<tasks.length();j++){
+                        for (int j = 0; j < tasks.length(); j++) {
                             JSONObject task = tasks.getJSONObject(j);
 
-                            Log.d("TAG","Name ---- "+task.getString("taskname"));
+                            Log.d("TAG", "Name ---- " + task.getString("taskname"));
 
                             HLObject hlTask = new HLObject(PhoenixConstants.Task.TASK_NAME);
                             hlTask.put(PhoenixConstants.Task.TASK_NAME, task.getString("taskname"));
@@ -121,16 +112,16 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> implements HLE
                     mOverDueListAdapter.setmDataSet(taskList);
                     mView.mOverdueList.setAdapter(mOverDueListAdapter);
 
-                    if(taskList.size() > 0){
+                    if (taskList.size() > 0) {
                         mView.mOverdueList.setVisibility(View.VISIBLE);
                         mView.mErrorText.setVisibility(View.GONE);
-                    }else {
+                    } else {
                         mView.mOverdueList.setVisibility(View.GONE);
                         mView.mErrorText.setVisibility(View.VISIBLE);
                         mView.mErrorText.setText("NO Tasks Found");
                     }
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -148,13 +139,13 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> implements HLE
 
     @Override
     public void onEvent(HLEvent hlEvent) {
-        HLCoreEvent e = (HLCoreEvent)hlEvent;
-        Bundle bundle=e.getmExtra();
+        HLCoreEvent e = (HLCoreEvent) hlEvent;
+        Bundle bundle = e.getmExtra();
 
     }
 
-    public void filterList(HLObject filterObj){
-        if(filterObj != null) {
+    public void filterList(HLObject filterObj) {
+        if (filterObj != null) {
             if (!filterObj.getString(PhoenixConstants.Task.START_DATE).equals(getString(R.string.select_date)) &&
                     !filterObj.getString(PhoenixConstants.Task.TO_DATE).equals(getString(R.string.select_date))) {
 
@@ -166,14 +157,14 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> implements HLE
                 String status = filterObj.getString(PhoenixConstants.Task.TASK_STATUS) + "/";
                 this.mOverDueListAdapter.getFilter().filter(status);
             }
-        }else{
+        } else {
             this.mOverDueListAdapter.getFilter().filter("");
             this.mOverDueListAdapter.notifyDataSetChanged();
         }
 
     }
 
-    public void searchList(String query){
+    public void searchList(String query) {
         this.mOverDueListAdapter.getFilter().filter(
                 query);
 

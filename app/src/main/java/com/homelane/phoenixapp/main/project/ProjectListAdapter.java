@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by hl0395 on 21/12/15.
  */
-public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ViewHolder>  implements Filterable {
+public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ViewHolder> implements Filterable {
 
 
     /**
@@ -82,7 +82,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     /**
      * ViewHolder class loads the views for the Recyler view item.
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView mCustomerName;
         public TextView mCustomerEmail;
@@ -94,15 +94,16 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
          */
         public ViewHolder(View itemView) {
             super(itemView);
-            mCustomerName = (TextView)itemView.findViewById(R.id.customer_name);
-            mCustomerEmail = (TextView)itemView.findViewById(R.id.customer_email);
-            mCustomerMobile = (TextView)itemView.findViewById(R.id.customer_mobile);
-            mCustomerStatus = (TextView)itemView.findViewById(R.id.customer_status);
+            mCustomerName = (TextView) itemView.findViewById(R.id.customer_name);
+            mCustomerEmail = (TextView) itemView.findViewById(R.id.customer_email);
+            mCustomerMobile = (TextView) itemView.findViewById(R.id.customer_mobile);
+            mCustomerStatus = (TextView) itemView.findViewById(R.id.customer_status);
         }
     }
 
     /**
      * getter function for mDataSet
+     *
      * @return the ArrayList containing the values
      */
     public ArrayList<HLObject> getmDataSet() {
