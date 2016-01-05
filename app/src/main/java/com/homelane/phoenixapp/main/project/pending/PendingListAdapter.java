@@ -1,4 +1,4 @@
-package com.homelane.phoenixapp.main.project.overdue;
+package com.homelane.phoenixapp.main.project.pending;
 
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Created by hl0395 on 21/12/15.
  */
-public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.ViewHolder> implements Filterable{
+public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.ViewHolder> implements Filterable{
 
 
     /**
@@ -48,12 +48,12 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
             FilterResults results = new FilterResults();
 
                 if (query.length() == 0) {
-                    results.values = OverdueListAdapter.this.mDataSet;
-                    results.count = OverdueListAdapter.this.mDataSet.size();
+                    results.values = PendingListAdapter.this.mDataSet;
+                    results.count = PendingListAdapter.this.mDataSet.size();
                 }else {
                     List<HLObject> tempList = new ArrayList();
-                    for (int i = 0; i < OverdueListAdapter.this.mDataSet.size(); i++) {
-                        HLObject project = (HLObject) OverdueListAdapter.this.mDataSet.get(i);
+                    for (int i = 0; i < PendingListAdapter.this.mDataSet.size(); i++) {
+                        HLObject project = (HLObject) PendingListAdapter.this.mDataSet.get(i);
                         if (listContains(project, query)) {
                             tempList.add(project);
                         }
@@ -74,14 +74,14 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
             if(!mFlag) {
                 if (project.getString(PhoenixConstants.Task.TASK_NAME).trim().toLowerCase().contains(query) ||
                         project.getString(PhoenixConstants.Task.START_DATE).toLowerCase().contains(query) ||
-                        String.valueOf(project.getInteger(PhoenixConstants.Task.TASK_STATUS)).toLowerCase().contains(query)) {
+                        project.getString(PhoenixConstants.Task.TASK_STATUS).toLowerCase().contains(query)) {
                     return true;
                 }
             }else {
                 String k[]=string.split("/");
                 mSearchFlag = true;
                 if(k.length == 1) {
-                    if (String.valueOf(project.getString(PhoenixConstants.Task.TASK_NAME)).trim().toLowerCase().
+                    if (project.getString(PhoenixConstants.Task.TASK_STATUS).trim().toLowerCase().
                             equals(k[0].toLowerCase().trim()))
                         return true;
                 }else if(k.length == 3){
@@ -91,7 +91,7 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
                     Date taskDate = stringToDate(project.getString(PhoenixConstants.Task.START_DATE));
 
 
-                    if (String.valueOf(project.getString(PhoenixConstants.Task.TASK_NAME)).trim().toLowerCase().
+                    if (project.getString(PhoenixConstants.Task.TASK_STATUS).trim().toLowerCase().
                             equals(k[0].toLowerCase().trim()) && isWithinRange(taskDate,start,end) )
                         return true;
                 }
@@ -105,9 +105,9 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
                 mFilterList = (ArrayList) results.values;
             }
 
-                OverdueListAdapter.this.mFilteredProjectList.clear();
-                OverdueListAdapter.this.mFilteredProjectList.addAll((ArrayList) results.values);
-                OverdueListAdapter.this.notifyDataSetChanged();
+                PendingListAdapter.this.mFilteredProjectList.clear();
+                PendingListAdapter.this.mFilteredProjectList.addAll((ArrayList) results.values);
+                PendingListAdapter.this.notifyDataSetChanged();
         }
     }
 

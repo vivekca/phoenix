@@ -1,4 +1,4 @@
-package com.homelane.phoenixapp.main.project.overdue;
+package com.homelane.phoenixapp.main.project.pending;
 
 import android.os.Bundle;
 import android.view.View;
@@ -21,15 +21,16 @@ import com.homelane.phoenixapp.R;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 /**
  * Created by hl0395 on 23/12/15.
  */
-public class OverduePresenter extends HLCoreFragment<OverdueView> {
+public class PendingPresenter extends HLCoreFragment<PendingView> {
 
 
-    OverdueListAdapter mOverDueListAdapter;
+    PendingListAdapter mPendingListAdapter;
     /**
      * RequestQueue for volley
      */
@@ -42,7 +43,7 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> {
         volleyReqQueue = Volley.newRequestQueue(getActivity());
 
         if(HLNetworkUtils.isNetworkAvailable(getActivity()))
-            getOverDueTasks();
+            getPendingTasks();
         else{
             Bundle bundle = new Bundle();
             bundle.putString(PhoenixConstants.SNACKBAR_DISPLAY_MESSAGE, "Please check your internet connection");
@@ -52,30 +53,30 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> {
             HLEventDispatcher.acquire().dispatchEvent(event);
         }
 
-        mOverDueListAdapter = new OverdueListAdapter();
-        mView.mOverdueList.setAdapter(mOverDueListAdapter);
+        mPendingListAdapter = new PendingListAdapter();
+        mView.mPendingList.setAdapter(mPendingListAdapter);
 
     }
 
     /**
-     * Function to request the server to fetch the overdue tasks
+     * Function to request the server to fetch the pending tasks
      * and update the adapter
      */
-    private void getOverDueTasks() {
-        ArrayList<String> overdueList = getArguments().getStringArrayList("list");
+     private void getPendingTasks() {
+        ArrayList<String> pendingList = getArguments().getStringArrayList("list");
         String str="";
 
-        for (String s: overdueList)
+        for (String s: pendingList)
             str = str + s + ",";
 
         try {
-            str = java.net.URLEncoder.encode(str, "UTF-8");
+            str = URLEncoder.encode(str, "UTF-8");
         }catch (Exception e){
             e.printStackTrace();
         }
 
         final String baseUrl = HLCoreLib.readProperty(PhoenixConstants.AppConfig.HL_AGGREGATE_TASK_URL) + "tasks="+
-                str+"&corelationId=123&status=COMPLETED&owners=hltestblrdesigner6@homelane.com";
+                str+"&corelationId=123&status=PENDING&owners=hltestblrdesigner6@homelane.com";
 
         StringRequest request = new StringRequest(Request.Method.GET, baseUrl, new Response.Listener<String>() {
             @Override
@@ -103,14 +104,13 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> {
 
                     }
 
-                    mOverDueListAdapter.setmDataSet(taskList);
-                    mOverDueListAdapter.notifyDataSetChanged();
+                    mPendingListAdapter.setmDataSet(taskList);
 
                     if(taskList.size() > 0){
-                        mView.mOverdueList.setVisibility(View.VISIBLE);
+                        mView.mPendingList.setVisibility(View.VISIBLE);
                         mView.mErrorText.setVisibility(View.GONE);
                     }else {
-                        mView.mOverdueList.setVisibility(View.GONE);
+                        mView.mPendingList.setVisibility(View.GONE);
                         mView.mErrorText.setVisibility(View.VISIBLE);
                         mView.mErrorText.setText("NO Tasks Found");
                     }
@@ -144,14 +144,14 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> {
                 String status = filterObj.getString(PhoenixConstants.Task.TASK_STATUS) + "/" +
                         filterObj.getString(PhoenixConstants.Task.START_DATE) + "/" +
                         filterObj.getString(PhoenixConstants.Task.TO_DATE);
-                this.mOverDueListAdapter.getFilter().filter(status);
+                this.mPendingListAdapter.getFilter().filter(status);
             } else {
                 String status = filterObj.getString(PhoenixConstants.Task.TASK_STATUS) + "/";
-                this.mOverDueListAdapter.getFilter().filter(status);
+                this.mPendingListAdapter.getFilter().filter(status);
             }
         }else{
-            this.mOverDueListAdapter.getFilter().filter("");
-            this.mOverDueListAdapter.notifyDataSetChanged();
+            this.mPendingListAdapter.getFilter().filter("");
+            this.mPendingListAdapter.notifyDataSetChanged();
         }
 
     }
@@ -161,7 +161,7 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> {
      * @param query is the searched string
      */
     public void searchList(String query){
-        this.mOverDueListAdapter.getFilter().filter(
+        this.mPendingListAdapter.getFilter().filter(
                 query);
 
     }
@@ -173,8 +173,8 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> {
     }
 
     @Override
-    protected Class<OverdueView> getVuClass() {
-        return OverdueView.class;
+    protected Class<PendingView> getVuClass() {
+        return PendingView.class;
     }
 
     @Override

@@ -72,6 +72,8 @@ public class PhoenixConstants {
     public static final String SEARCH_EVENT = "SEARCH_EVENT";
     public static final String DISABLE_SEARCH_EVENT = "DISABLE_SEARCH_EVENT";
     public static final String DISABLE_FILTER_EVENT = "DISABLE_FILTER_EVENT";
+    public static final String UPDATE_STATUS_EVENT = "UPDATE_STATUS_EVENT";
+    public static final String STATUS_LIST = "STATUS_LIST";
     public static final String FILTER_STATUS = "FILTER_STATUS";
     public static final String FILTER_EVENT = "FILTER_EVENT";
 
