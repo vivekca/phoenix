@@ -127,10 +127,10 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
         final HLObject customer = mDataSet.get(position);
-            holder.mCustomerName.setText(customer.getString(PhoenixConstants.Customer.CUSTOMER_NAME));
-            holder.mCustomerEmail.setText(customer.getString(PhoenixConstants.Customer.CUSTOMER_EMAIL));
-            holder.mCustomerMobile.setText(customer.getString(PhoenixConstants.Customer.CUSTOMER_MOBILE));
-            holder.mCustomerProjectStatus.setText(customer.getString(PhoenixConstants.Customer.CUSTOMER_STATUS));
+        holder.mCustomerName.setText(customer.getString(PhoenixConstants.Customer.CUSTOMER_NAME));
+        holder.mCustomerEmail.setText(customer.getString(PhoenixConstants.Customer.CUSTOMER_EMAIL));
+        holder.mCustomerMobile.setText(customer.getString(PhoenixConstants.Customer.CUSTOMER_MOBILE));
+        holder.mCustomerProjectStatus.setText(customer.getString(PhoenixConstants.Customer.CUSTOMER_STATUS));
     }
 
     /**

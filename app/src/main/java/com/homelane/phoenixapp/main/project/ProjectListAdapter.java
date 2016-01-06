@@ -55,7 +55,8 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
 
         private boolean listContains(HLObject project, CharSequence query) {
             query = query.toString().trim().toLowerCase();
-            if (project.getString(PhoenixConstants.Project.PROJECT_NAME).trim().toLowerCase().contains(query) || project.getString(PhoenixConstants.Project.PROJECT_LOCATION).toLowerCase().contains(query) || project.getString(PhoenixConstants.Project.PROJECT_STATE).toLowerCase().contains(query)) {
+            if (project.getString(PhoenixConstants.Project.PROJECT_NAME).trim().toLowerCase().contains(query) ||
+                    project.getString(PhoenixConstants.Project.PROJECT_LOCATION).toLowerCase().contains(query)) {
                 return true;
             }
             String name = project.getString(PhoenixConstants.Project.PROJECT_STATUS);

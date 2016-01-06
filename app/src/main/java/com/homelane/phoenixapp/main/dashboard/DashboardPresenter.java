@@ -2,7 +2,6 @@ package com.homelane.phoenixapp.main.dashboard;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -23,14 +22,13 @@ import com.homelane.phoenixapp.SearchEvent;
 import com.homelane.phoenixapp.main.MainPresenter;
 import com.homelane.phoenixapp.main.project.ProjectPresenter;
 import com.homelane.phoenixapp.main.project.overdue.OverduePresenter;
+import com.homelane.phoenixapp.main.project.pending.PendingPresenter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by hl0395 on 16/12/15.
@@ -41,6 +39,9 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
      * RequestQueue for volley
      */
     RequestQueue volleyReqQueue;
+    ProjectPresenter mProjectPresenter;
+    OverduePresenter mOverduePresenter;
+    PendingPresenter mPendingPresenter;
 
     @Override
     protected void onBindView() {
@@ -79,16 +80,12 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
                 HLCoreEvent event = new HLCoreEvent(PhoenixConstants.DISABLE_FILTER_EVENT,
                         bundle);
                 HLEventDispatcher.acquire().dispatchEvent(event);
-
-
             }
-
             @Override
             public void onPageScrollStateChanged(int state) {
                 HLCoreEvent event = new HLCoreEvent(PhoenixConstants.DISABLE_SEARCH_EVENT,
                         null);
                 HLEventDispatcher.acquire().dispatchEvent(event);
-
 
             }
         });
@@ -103,9 +100,6 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
 
     }
 
-    ProjectPresenter mProjectPresenter;
-    OverduePresenter mOverduePresenter;
-
     /**
      * Function to create view pager adapter and set it to the view pager.
      * getChildFragmentManager() is used because, it has to recreate when the parent fragment
@@ -116,7 +110,7 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFragment(mProjectPresenter, "Projects Assigned");
         adapter.addFragment(mOverduePresenter, "Overdue Tasks");
-//        adapter.addFragment(new OverduePresenter(), "Pending Tasks");
+        adapter.addFragment(mPendingPresenter, "Pending Tasks");
         mView.mViewPager.setAdapter(adapter);
     }
 
@@ -131,27 +125,36 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
                     mOverduePresenter.filterList((HLObject) bundle.getParcelable(PhoenixConstants.Task.FILTER));
                 else
                     mOverduePresenter.filterList(null);
+            }else if(mView.mViewPager.getCurrentItem() == 2){
+                if(bundle != null)
+                    mPendingPresenter.filterList((HLObject) bundle.getParcelable(PhoenixConstants.Task.FILTER));
+                else
+                    mPendingPresenter.filterList(null);
+
             }
         } else if (e.getType().equals(PhoenixConstants.SEARCH_EVENT)) {
             SearchEvent searchEvent = (SearchEvent) hlEvent;
             if ((searchEvent.getmCategory() == 2)) {
                 if (mView.mViewPager.getCurrentItem() == 0) {
                     this.mProjectPresenter.searchList(searchEvent.getmExtra().getString("android.intent.action.SEARCH"));
-                } else if (mView.mViewPager.getCurrentItem() == 2) {
+                }
+                else if(mView.mViewPager.getCurrentItem() == 2) {
+                    this.mPendingPresenter.searchList(searchEvent.getmExtra().getString("android.intent.action.SEARCH"));
+                }else{
                     this.mOverduePresenter.searchList(searchEvent.getmExtra().getString("android.intent.action.SEARCH"));
-                } else {
-                    this.mOverduePresenter.searchList(searchEvent.getmExtra().getString("android.intent.action.SEARCH"));
-
-
                 }
             }
         }
     }
 
-    private void getProjectList() {
+    /**
+     * Function to request the server to fetch the project list
+     * and set the set the view pager
+     */
+    private void getProjectList(){
         mProjectPresenter = new ProjectPresenter();
         mOverduePresenter = new OverduePresenter();
-        mView.mProgressView.showProgress();
+        mPendingPresenter = new PendingPresenter();
 
         final String baseUrl = HLCoreLib.readProperty(PhoenixConstants.AppConfig.HL_PROJECT_DETAILS_URL);
 
@@ -161,7 +164,7 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     JSONArray projects = jsonObject.getJSONArray("projects");
-                    mView.mProgressView.hideProgress();
+               //     mView.mProgressView.hideProgress();
 
                     ArrayList<HLObject> projectList = new ArrayList<HLObject>();
                     HashSet<String> taskList = new HashSet<String>();
@@ -185,17 +188,25 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
                             taskList.add(task.getString("name"));
                         }
                     }
+                    ArrayList<String> list =new ArrayList<String> (taskList);
 
                     Bundle bundle = new Bundle();
                     bundle.putParcelableArrayList("list", projectList);
                     mProjectPresenter.setArguments(bundle);
-
-                    ArrayList<String> list = new ArrayList<String>(taskList);
-
-
                     bundle = new Bundle();
                     bundle.putStringArrayList("list", list);
                     mOverduePresenter.setArguments(bundle);
+
+                    mPendingPresenter.setArguments(bundle);
+
+
+                    bundle = new Bundle();
+                    bundle.putStringArrayList(PhoenixConstants.STATUS_LIST, list);
+
+                    HLCoreEvent event = new HLCoreEvent(PhoenixConstants.UPDATE_STATUS_EVENT,
+                            bundle);
+                    HLEventDispatcher.acquire().dispatchEvent(event);
+
 
                     setupViewPager();
                     ((MainPresenter) getActivity()).getTabLayout().setupWithViewPager(mView.mViewPager);

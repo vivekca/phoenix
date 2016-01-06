@@ -67,6 +67,17 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
 
     String mFromValue;
     String mToValue;
+    CardView mCardView;
+    Button mFilterButton;
+    ImageView mCancelButton;
+    TextView mDate;
+    String mSelectedStatus;
+    TextView mStatus;
+    Spinner mStatusSpinner;
+    boolean doubleBackToExitPressedOnce = false;
+    SearchView searchView;
+    boolean isFilterVisible = false;
+
 
     @Override
     protected void onBindView() {
@@ -116,6 +127,9 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         if (!hasEventListener(PhoenixConstants.DISABLE_FILTER_EVENT, this))
             addEventListener(PhoenixConstants.DISABLE_FILTER_EVENT, this);
 
+        if(!hasEventListener(PhoenixConstants.UPDATE_STATUS_EVENT,this))
+            addEventListener(PhoenixConstants.UPDATE_STATUS_EVENT,this);
+
 
         setNavigationItemSelection(1);
 
@@ -145,6 +159,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         removeEventListener(PhoenixConstants.SELECTED_DATE_EVENT, this);
         removeEventListener(PhoenixConstants.DISABLE_FILTER_EVENT, this);
         removeEventListener(PhoenixConstants.DISABLE_SEARCH_EVENT, this);
+        removeEventListener(PhoenixConstants.UPDATE_STATUS_EVENT, this);
     }
 
     @Override
@@ -181,9 +196,31 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         else if (e.getType().equals(PhoenixConstants.DISABLE_FILTER_EVENT)) {
             isFilterVisible = bundle.getBoolean(PhoenixConstants.FILTER_STATUS);
             supportInvalidateOptionsMenu();
+        }else if(e.getType().equals(PhoenixConstants.UPDATE_STATUS_EVENT)){
+
+            final ArrayList<String>spinnerItems = bundle.getStringArrayList(PhoenixConstants.STATUS_LIST);
+
+            ArrayAdapter<String> stringArrayAdapter =new ArrayAdapter<String>(
+                    this,android.R.layout.simple_spinner_item,spinnerItems);
+            stringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mStatusSpinner.setAdapter(stringArrayAdapter);
+            mFromDate.setText(getString(R.string.select_date));
+            mToDate.setText(getString(R.string.select_date));
+
+            mStatusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    String spinnerValue = spinnerItems.get(position);
+                    mSelectedStatus = spinnerValue;
+
+                }
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
         }
-
-
     }
 
     /**
@@ -226,19 +263,10 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
             imageView.loadImageURL(LoginPresenter.mGoogleAccount.getPhotoUrl().toString());
     }
 
-    CardView mCardView;
-    Button mFilterButton;
-    ImageView mCancelButton;
-    TextView mDate;
-    String mSelectedStatus;
-    TextView mStatus;
-
 
     /**
      * Function to initialize the right sliding navigation view
      */
-
-
     private void setRightNavigationView() {
         View headerView = LayoutInflater.from(this).inflate(R.layout.filter_layout, mView.mRightNavigationView);
         mFromDate = (TextView) headerView.findViewById(R.id.start_date);
@@ -251,41 +279,13 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
 
         final Calendar calendar = Calendar.getInstance();
 
-        final Spinner spinner = (Spinner) headerView.findViewById(R.id.status_spinner);
+        mStatusSpinner = (Spinner) headerView.findViewById(R.id.status_spinner);
 
-        final ArrayList<String> spinnerItems = new ArrayList<String>();
-        spinnerItems.add("Initial Quote");
-        spinnerItems.add("Collect 10%");
-        spinnerItems.add("Initial Quote Approved");
-        spinnerItems.add("Initial Quote - Requested For Rev");
-        spinnerItems.add("Initial Quote - Revision Sent");
-        spinnerItems.add("Initial Quote - Revision Approved");
-
-        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_item, spinnerItems);
-        stringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(stringArrayAdapter);
-        mFromDate.setText(getString(R.string.select_date));
-        mToDate.setText(getString(R.string.select_date));
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String spinnerValue = spinnerItems.get(position);
-                mSelectedStatus = spinnerValue;
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mCardView.setVisibility(View.GONE);
-                spinner.setSelection(0);
+                mStatusSpinner.setSelection(0);
                 mFromDate.setText(getString(R.string.select_date));
                 mToDate.setText(getString(R.string.select_date));
 
@@ -372,8 +372,6 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         Snackbar.make(mView.mDrawerLayout, message, Snackbar.LENGTH_SHORT).show();
     }
 
-    boolean doubleBackToExitPressedOnce = false;
-
     @Override
     public void onBackPressed() {
         if (mView.mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -407,8 +405,6 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         }
     }
 
-    SearchView searchView;
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
@@ -433,16 +429,12 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
                             SearchEvent.Category.SEARCH);
                     dispatchEvent(searchEvent);
                 }
-
-
                 return false;
             }
         };
         searchView.setOnQueryTextListener(queryTextListener);
-
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -507,8 +499,12 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         }
     }
 
-    private void setNavigationItemSelection(int position) {
-        switch (position) {
+    /**
+     * Set the selected background for the navigation item on the left
+     * @param position
+     */
+    private void setNavigationItemSelection(int position){
+        switch (position){
             case 1:
                 mView.mLeftNavigationView.setCheckedItem(R.id.nav_dashboard);
                 mView.mToolbar.setSubtitle("Dashboard");
@@ -552,8 +548,6 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
 
         return super.onPrepareOptionsMenu(menu);
     }
-
-    boolean isFilterVisible = false;
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {

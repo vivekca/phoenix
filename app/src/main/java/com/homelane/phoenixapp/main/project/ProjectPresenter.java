@@ -1,27 +1,18 @@
 package com.homelane.phoenixapp.main.project;
 
-import android.os.Bundle;
 import android.view.View;
 
-import com.hl.hlcorelib.mvp.events.HLCoreEvent;
-import com.hl.hlcorelib.mvp.events.HLEvent;
-import com.hl.hlcorelib.mvp.events.HLEventListener;
 import com.hl.hlcorelib.mvp.presenters.HLCoreFragment;
 import com.hl.hlcorelib.orm.HLObject;
-import com.homelane.phoenixapp.PhoenixConstants;
-import com.homelane.phoenixapp.SearchEvent;
-import com.homelane.phoenixapp.main.MainPresenter;
 
 import java.util.ArrayList;
 
 /**
  * Created by hl0395 on 16/12/15.
  */
-public class ProjectPresenter extends HLCoreFragment<ProjectView> implements HLEventListener {
+public class ProjectPresenter extends HLCoreFragment<ProjectView> {
 
     ProjectListAdapter mProjectListAdapter;
-
-    boolean mEmptyFlag = true;
 
     @Override
     protected void onBindView() {
@@ -46,17 +37,6 @@ public class ProjectPresenter extends HLCoreFragment<ProjectView> implements HLE
             mView.mErrorText.setText("No projects found.");
         }
 
-        if (!hasEventListener(PhoenixConstants.NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT, this))
-            addEventListener(PhoenixConstants.NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT, this);
-
-    }
-
-    @Override
-    protected void onDestroyHLView() {
-        super.onDestroyHLView();
-        removeEventListener(PhoenixConstants.NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT, this);
-
-
     }
 
     @Override
@@ -65,28 +45,12 @@ public class ProjectPresenter extends HLCoreFragment<ProjectView> implements HLE
     }
 
     /**
-     * Delegate method which will be called against respective events
-     *
-     * @param hlEvent the event which is dispatched by the {@link com.hl.hlcorelib.mvp.events.HLDispatcher}
+     * Function to search from the search view
+     * @param query is the searched string
      */
 
-    @Override
-    public void onEvent(HLEvent hlEvent) {
-        HLCoreEvent e = (HLCoreEvent) hlEvent;
-        Bundle bundle = e.getmExtra();
+    public void searchList(String query){
 
-        if (e.getType().equals(PhoenixConstants.NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT)) {
-//            HLFragmentUtils.HLFragmentTransaction transaction =
-//                    new HLFragmentUtils.HLFragmentTransaction();
-//            transaction.mFrameId = R.id.fragment_frame;
-//            transaction.mFragmentClass = DesignerPresenter.class;
-//            push(transaction);
-        }
-
-
-    }
-
-    public void searchList(String query) {
         this.mProjectListAdapter.getFilter().filter(
                 query);
 

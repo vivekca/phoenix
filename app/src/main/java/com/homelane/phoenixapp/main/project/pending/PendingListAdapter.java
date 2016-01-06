@@ -1,4 +1,4 @@
-package com.homelane.phoenixapp.main.project.overdue;
+package com.homelane.phoenixapp.main.project.pending;
 
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Created by hl0395 on 21/12/15.
  */
-public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.ViewHolder> implements Filterable {
+public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.ViewHolder> implements Filterable{
 
 
     /**
@@ -47,65 +47,52 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
         protected FilterResults performFiltering(CharSequence query) {
             FilterResults results = new FilterResults();
 
-            if (query.length() == 0 && mFilterList.size() == 0) {
-                results.values = OverdueListAdapter.this.mDataSet;
-                results.count = OverdueListAdapter.this.mDataSet.size();
-            } else if (query.length() == 0 && mFilterList.size() > 0) {
-                results.values = OverdueListAdapter.this.mFilterList;
-                results.count = OverdueListAdapter.this.mFilterList.size();
-            } else if (query.length() > 0 && mFilterList.size() > 0) {
-                List<HLObject> tempList = new ArrayList();
-                for (int i = 0; i < OverdueListAdapter.this.mFilterList.size(); i++) {
-                    HLObject project = (HLObject) OverdueListAdapter.this.mFilterList.get(i);
-                    if (listContains(project, query)) {
-                        tempList.add(project);
+                if (query.length() == 0) {
+                    results.values = PendingListAdapter.this.mDataSet;
+                    results.count = PendingListAdapter.this.mDataSet.size();
+                }else {
+                    List<HLObject> tempList = new ArrayList();
+                    for (int i = 0; i < PendingListAdapter.this.mDataSet.size(); i++) {
+                        HLObject project = (HLObject) PendingListAdapter.this.mDataSet.get(i);
+                        if (listContains(project, query)) {
+                            tempList.add(project);
+                        }
                     }
+                    results.values = tempList;
+                    results.count = tempList.size();
                 }
-
-                results.values = tempList;
-                results.count = tempList.size();
-
-            } else {
-                List<HLObject> tempList = new ArrayList();
-                for (int i = 0; i < OverdueListAdapter.this.mDataSet.size(); i++) {
-                    HLObject project = (HLObject) OverdueListAdapter.this.mDataSet.get(i);
-                    if (listContains(project, query)) {
-                        tempList.add(project);
-                    }
-                }
-                results.values = tempList;
-                results.count = tempList.size();
-            }
 
             return results;
         }
 
 
+
         private boolean listContains(HLObject project, CharSequence query) {
             query = query.toString().trim().toLowerCase();
-            String string = (String) query;
-            boolean mFlag = string.contains("/");
-            if (!mFlag) {
+            String string =(String)query;
+             mFlag = string.contains("/");
+            if(!mFlag) {
                 if (project.getString(PhoenixConstants.Task.TASK_NAME).trim().toLowerCase().contains(query) ||
                         project.getString(PhoenixConstants.Task.START_DATE).toLowerCase().contains(query) ||
-                        String.valueOf(project.getInteger(PhoenixConstants.Task.TASK_STATUS)).toLowerCase().contains(query)) {
+                        project.getString(PhoenixConstants.Task.TASK_STATUS).toLowerCase().contains(query)) {
                     return true;
                 }
-            } else {
+            }else {
+                String k[]=string.split("/");
                 mSearchFlag = true;
-                String k[] = string.split("/");
-                if (k.length == 1) {
-                    if (String.valueOf(project.getString(PhoenixConstants.Task.TASK_NAME)).trim().toLowerCase().
+                if(k.length == 1) {
+                    if (project.getString(PhoenixConstants.Task.TASK_STATUS).trim().toLowerCase().
                             equals(k[0].toLowerCase().trim()))
                         return true;
-                } else if (k.length == 3) {
+                }else if(k.length == 3){
 
                     Date start = stringToDate(k[1]);
                     Date end = stringToDate(k[2]);
                     Date taskDate = stringToDate(project.getString(PhoenixConstants.Task.START_DATE));
 
-                    if (String.valueOf(project.getString(PhoenixConstants.Task.TASK_NAME)).trim().toLowerCase().
-                            equals(k[0].toLowerCase().trim()) && isWithinRange(taskDate, start, end))
+
+                    if (project.getString(PhoenixConstants.Task.TASK_STATUS).trim().toLowerCase().
+                            equals(k[0].toLowerCase().trim()) && isWithinRange(taskDate,start,end) )
                         return true;
                 }
 
@@ -114,38 +101,35 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
         }
 
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            if (mSearchFlag) {
+            if(mSearchFlag){
                 mFilterList = (ArrayList) results.values;
-                mSearchFlag = false;
             }
 
-            OverdueListAdapter.this.mFilteredProjectList.clear();
-            OverdueListAdapter.this.mFilteredProjectList.addAll((ArrayList) results.values);
-            OverdueListAdapter.this.notifyDataSetChanged();
+                PendingListAdapter.this.mFilteredProjectList.clear();
+                PendingListAdapter.this.mFilteredProjectList.addAll((ArrayList) results.values);
+                PendingListAdapter.this.notifyDataSetChanged();
         }
-
-        boolean mSearchFlag = false;
     }
 
 
     /**
      * clearing the SearchFilter Object;
      */
-    public void clearFilterList() {
+    public void clearFilterList(){
         mFilterList.clear();
     }
 
     List<HLObject> mFilterList = new ArrayList();
+    boolean mFlag, mSearchFlag =false;
 
 
     /**
      * Function to convert the date from string to Date object
-     *
      * @param dateInString is the date in string format
      * @return the Date object
      */
 
-    private Date stringToDate(String dateInString) {
+    private Date stringToDate(String dateInString){
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         try {
             Date date = formatter.parse(dateInString);
@@ -158,10 +142,9 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
 
     /**
      * Function to check whether the given date is within the certain range
-     *
-     * @param testDate  is the date to the checked
+     * @param testDate is the date to the checked
      * @param startDate is the initial starting date range
-     * @param endDate   is the final ending date range
+     * @param endDate is the final ending date range
      * @return
      */
     boolean isWithinRange(Date testDate, Date startDate, Date endDate) {
@@ -172,7 +155,7 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
     /**
      * ViewHolder class loads the views for the Recyler view item.
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder{
 
         public TextView mTaskName;
         public TextView mTaskDueDate;
@@ -184,10 +167,10 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
          */
         public ViewHolder(View itemView) {
             super(itemView);
-            mTaskName = (TextView) itemView.findViewById(R.id.customer_name);
-            mTaskDueDate = (TextView) itemView.findViewById(R.id.customer_email);
-            mTaskStatus = (TextView) itemView.findViewById(R.id.customer_mobile);
-            mCustomerStatus = (TextView) itemView.findViewById(R.id.customer_status);
+            mTaskName = (TextView)itemView.findViewById(R.id.customer_name);
+            mTaskDueDate = (TextView)itemView.findViewById(R.id.customer_email);
+            mTaskStatus = (TextView)itemView.findViewById(R.id.customer_mobile);
+            mCustomerStatus = (TextView)itemView.findViewById(R.id.customer_status);
             mCustomerStatus.setVisibility(View.GONE);
 
             mTaskName.setTypeface(null, Typeface.NORMAL);
@@ -195,14 +178,13 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
             mTaskDueDate.setGravity(Gravity.RIGHT);
             mTaskDueDate.setPadding(10, 5, 5, 5);
             mTaskStatus.setTypeface(null, Typeface.BOLD);
-            mTaskStatus.setPadding(10, 0, 0, 0);
+            mTaskStatus.setPadding(10,0,0,0);
 
         }
     }
 
     /**
      * getter function for mDataSet
-     *
      * @return the ArrayList containing the values
      */
     public ArrayList<HLObject> getmDataSet() {
@@ -285,14 +267,14 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
         HLObject customer = (HLObject) this.mFilteredProjectList.get(position);
 
         holder.mTaskName.setText(customer.getString(PhoenixConstants.Task.TASK_NAME));
-        holder.mTaskStatus.setText("Count: " + customer.getInteger(PhoenixConstants.Task.TASK_STATUS));
+        holder.mTaskStatus.setText("Count: "+customer.getInteger(PhoenixConstants.Task.TASK_STATUS));
 
         try {
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
             Date date = format.parse(customer.getString(PhoenixConstants.Task.START_DATE));
 
             holder.mTaskDueDate.setText(new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").format(date));
-        } catch (Exception e) {
+        }catch (Exception e){
             e.printStackTrace();
         }
 

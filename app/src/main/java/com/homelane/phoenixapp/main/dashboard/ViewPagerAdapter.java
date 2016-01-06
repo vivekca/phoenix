@@ -1,12 +1,8 @@
 package com.homelane.phoenixapp.main.dashboard;
 
-import android.provider.SyncStateContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-
-import com.homelane.phoenixapp.PhoenixConstants;
-import com.homelane.phoenixapp.SearchEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,9 +37,5 @@ class ViewPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         return mFragmentTitleList.get(position);
     }
-
-
-
-
 
 }
