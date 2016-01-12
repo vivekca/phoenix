@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Created by hl0395 on 21/12/15.
  */
-public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ViewHolder>  implements Filterable {
+public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ViewHolder> implements Filterable {
 
 
     /**
@@ -109,6 +109,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
 
     /**
      * getter function for mDataSet
+     *
      * @return the ArrayList containing the values
      */
     public ArrayList<HLObject> getmDataSet() {

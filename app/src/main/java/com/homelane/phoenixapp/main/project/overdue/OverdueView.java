@@ -75,16 +75,15 @@ public class OverdueView implements HLView {
     @Override
     public void init(LayoutInflater inflater, ViewGroup parent) {
         mView = inflater.inflate(R.layout.project_layout, parent, false);
-        mOverdueList = (RecyclerView)mView.findViewById(R.id.project_list);
+        mOverdueList = (RecyclerView) mView.findViewById(R.id.project_list);
         mOverdueList.setHasFixedSize(true);
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(inflater.getContext());
         mOverdueList.setLayoutManager(mLayoutManager);
-        mProgressView = (HLProgressView)mView.findViewById(R.id.progress_view);
+        mProgressView = (HLProgressView) mView.findViewById(R.id.progress_view);
         mErrorText = (TextView) mView.findViewById(R.id.error_display);
         mErrorText.setText("No tasks at the moment");
         mErrorText.setVisibility(View.VISIBLE);
     }
-
 
 
 }

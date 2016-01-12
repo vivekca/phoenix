@@ -47,13 +47,13 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
     protected void onBindView() {
         super.onBindView();
 
-        ((MainPresenter)getActivity()).setTabVisible(true);
+        ((MainPresenter) getActivity()).setTabVisible(true);
 
         volleyReqQueue = Volley.newRequestQueue(getActivity());
 
-        if(HLNetworkUtils.isNetworkAvailable(getActivity()))
+        if (HLNetworkUtils.isNetworkAvailable(getActivity()))
             getProjectList();
-        else{
+        else {
             Bundle bundle = new Bundle();
             bundle.putString(PhoenixConstants.SNACKBAR_DISPLAY_MESSAGE, "Please check your internet connection");
 
@@ -72,7 +72,7 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
             public void onPageSelected(int position) {
                 Bundle bundle = new Bundle();
 
-                if(position == 0)
+                if (position == 0)
                     bundle.putBoolean(PhoenixConstants.FILTER_STATUS, false);
                 else
                     bundle.putBoolean(PhoenixConstants.FILTER_STATUS, true);
@@ -86,6 +86,7 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
                 HLCoreEvent event = new HLCoreEvent(PhoenixConstants.DISABLE_SEARCH_EVENT,
                         null);
                 HLEventDispatcher.acquire().dispatchEvent(event);
+
             }
         });
 
@@ -94,7 +95,7 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
             addEventListener(PhoenixConstants.SEARCH_EVENT, this);
         }
 
-        if(!hasEventListener(PhoenixConstants.FILTER_EVENT, this))
+        if (!hasEventListener(PhoenixConstants.FILTER_EVENT, this))
             addEventListener(PhoenixConstants.FILTER_EVENT, this);
 
     }
@@ -115,12 +116,12 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
 
     @Override
     public void onEvent(HLEvent hlEvent) {
-        HLCoreEvent e = (HLCoreEvent)hlEvent;
-        Bundle bundle=e.getmExtra();
+        HLCoreEvent e = (HLCoreEvent) hlEvent;
+        Bundle bundle = e.getmExtra();
 
-        if(e.getType().equals(PhoenixConstants.FILTER_EVENT)) {
-            if(mView.mViewPager.getCurrentItem() == 1) {
-                if(bundle != null)
+        if (e.getType().equals(PhoenixConstants.FILTER_EVENT)) {
+            if (mView.mViewPager.getCurrentItem() == 1) {
+                if (bundle != null)
                     mOverduePresenter.filterList((HLObject) bundle.getParcelable(PhoenixConstants.Task.FILTER));
                 else
                     mOverduePresenter.filterList(null);
@@ -131,10 +132,10 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
                     mPendingPresenter.filterList(null);
 
             }
-        }else if (e.getType().equals(PhoenixConstants.SEARCH_EVENT)) {
+        } else if (e.getType().equals(PhoenixConstants.SEARCH_EVENT)) {
             SearchEvent searchEvent = (SearchEvent) hlEvent;
             if ((searchEvent.getmCategory() == 2)) {
-                if(mView.mViewPager.getCurrentItem() == 0) {
+                if (mView.mViewPager.getCurrentItem() == 0) {
                     this.mProjectPresenter.searchList(searchEvent.getmExtra().getString("android.intent.action.SEARCH"));
                 }
                 else if(mView.mViewPager.getCurrentItem() == 2) {
@@ -163,18 +164,19 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     JSONArray projects = jsonObject.getJSONArray("projects");
+               //     mView.mProgressView.hideProgress();
 
                     ArrayList<HLObject> projectList = new ArrayList<HLObject>();
                     HashSet<String> taskList = new HashSet<String>();
 
-                    for (int i=0; i < projects.length(); i++){
+                    for (int i = 0; i < projects.length(); i++) {
                         HLObject hlProject = new HLObject(PhoenixConstants.Project.NAME);
                         JSONObject project = projects.getJSONObject(i);
 
                         hlProject.put(PhoenixConstants.Project.PROJECT_NAME, project.getString("projectName"));
                         hlProject.put(PhoenixConstants.Project.PROJECT_LOCATION, project.getString("location"));
-                        if(project.has("state"))
-                        hlProject.put(PhoenixConstants.Project.PROJECT_STATE, project.getString("state"));
+                        if (project.has("state"))
+                            hlProject.put(PhoenixConstants.Project.PROJECT_STATE, project.getString("state"));
                         hlProject.put(PhoenixConstants.Project.PROJECT_STATUS, project.getString("status"));
                         hlProject.put(PhoenixConstants.Project.PROJECT_ID, project.getString("id"));
 
@@ -182,7 +184,7 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
 
                         JSONArray tasks = project.getJSONArray("tasks");
 
-                        for(int j=0; j<tasks.length(); j++){
+                        for (int j = 0; j < tasks.length(); j++) {
                             JSONObject task = tasks.getJSONObject(j);
                             taskList.add(task.getString("name"));
                         }
@@ -192,9 +194,6 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
                     Bundle bundle = new Bundle();
                     bundle.putParcelableArrayList("list", projectList);
                     mProjectPresenter.setArguments(bundle);
-
-
-
                     bundle = new Bundle();
                     bundle.putStringArrayList("list", list);
                     mOverduePresenter.setArguments(bundle);
@@ -211,9 +210,9 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
 
 
                     setupViewPager();
-                    ((MainPresenter)getActivity()).getTabLayout().setupWithViewPager(mView.mViewPager);
+                    ((MainPresenter) getActivity()).getTabLayout().setupWithViewPager(mView.mViewPager);
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
