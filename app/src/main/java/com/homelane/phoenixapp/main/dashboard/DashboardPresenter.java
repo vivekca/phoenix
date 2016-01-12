@@ -176,6 +176,7 @@ public class DashboardPresenter extends HLCoreFragment<DashboardView> implements
                         if(project.has("state"))
                         hlProject.put(PhoenixConstants.Project.PROJECT_STATE, project.getString("state"));
                         hlProject.put(PhoenixConstants.Project.PROJECT_STATUS, project.getString("status"));
+                        hlProject.put(PhoenixConstants.Project.PROJECT_ID, project.getString("id"));
 
                         projectList.add(hlProject);
 

@@ -34,6 +34,7 @@ public class PhoenixConstants {
     public static final class Project {
         public static final String NAME = "Project";
         public static final String PROJECT_NAME = "ProjectName";
+        public static final String PROJECT_ID = "ProjectID";
         public static final String PROJECT_LOCATION = "ProjectLocation";
         public static final String PROJECT_STATUS = "ProjectStatus";
         public static final String PROJECT_STATE = "ProjectState";
@@ -50,10 +51,17 @@ public class PhoenixConstants {
         public static final String TASK_ID = "TaskID";
         public static final String TASK_NAME="TaskName";
         public static final String START_DATE  = "StartDate";
-        public static final String TO_DATE  = "ToDate";
+        public static final String COMPLETED_DATE = "ToDate";
         public static final String TASK_STATUS = "TaskStatus";
         public static final String TASK_FLAG = "TaskFlag";
         public static final String FILTER = "Filter";
+    }
+    public static final class State {
+        public static final String NAME = "State";
+        public static final String STATE_NAME="StateName";
+        public static final String STATE_START_DATE  = "StateStartDate";
+        public static final String STATE_COMPLETED_DATE = "StateCompletedDate";
+        public static final String STATE_STATUS = "StateStatus";
     }
     /**
      * Class holds all keys against respective values in
@@ -61,8 +69,10 @@ public class PhoenixConstants {
      * will be matching the keys in the property file
      */
     public static final class AppConfig{
+        public static final String HL_PHOENIX_BASE_URL  = "hl_phoenix_base_url";
         public static final String HL_PROJECT_DETAILS_URL  = "hl_project_details_url";
         public static final String HL_AGGREGATE_TASK_URL  = "hl_aggregate_task_url";
+        public static final String HL_HISTORY_TASK_URL  = "hl_history_task_url";
         public static final int HL_ENVIRONMENT_DEV         = 0;
         public static final int HL_ENVIRONMENT_STAGE       = 1;
         public static final int HL_ENVIRONMENT_PROD        = 2;
@@ -78,7 +88,7 @@ public class PhoenixConstants {
     public static final String FILTER_EVENT = "FILTER_EVENT";
 
 
-    public static final String NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT ="NavigateToCustomerDashboard";
+    public static final String NAVIGATE_TO_PROJECT_DETAILS_EVENT ="NavigateToProjectDetails";
     public static final String SNACKBAR_DISPLAY_EVENT ="SnackbarDisplay";
     public static final String SNACKBAR_DISPLAY_MESSAGE ="SnackbarDisplayMessage";
     public static final String SELECTED_DATE_EVENT ="SelectedDate";

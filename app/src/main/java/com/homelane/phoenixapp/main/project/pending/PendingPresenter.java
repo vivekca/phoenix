@@ -139,11 +139,11 @@ public class PendingPresenter extends HLCoreFragment<PendingView> {
     public void filterList(HLObject filterObj){
         if(filterObj != null) {
             if (!filterObj.getString(PhoenixConstants.Task.START_DATE).equals(getString(R.string.select_date)) &&
-                    !filterObj.getString(PhoenixConstants.Task.TO_DATE).equals(getString(R.string.select_date))) {
+                    !filterObj.getString(PhoenixConstants.Task.COMPLETED_DATE).equals(getString(R.string.select_date))) {
 
                 String status = filterObj.getString(PhoenixConstants.Task.TASK_STATUS) + "/" +
                         filterObj.getString(PhoenixConstants.Task.START_DATE) + "/" +
-                        filterObj.getString(PhoenixConstants.Task.TO_DATE);
+                        filterObj.getString(PhoenixConstants.Task.COMPLETED_DATE);
                 this.mPendingListAdapter.getFilter().filter(status);
             } else {
                 String status = filterObj.getString(PhoenixConstants.Task.TASK_STATUS) + "/";

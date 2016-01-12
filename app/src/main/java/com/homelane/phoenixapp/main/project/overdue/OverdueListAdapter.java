@@ -74,7 +74,7 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
             if(!mFlag) {
                 if (project.getString(PhoenixConstants.Task.TASK_NAME).trim().toLowerCase().contains(query) ||
                         project.getString(PhoenixConstants.Task.START_DATE).toLowerCase().contains(query) ||
-                        String.valueOf(project.getInteger(PhoenixConstants.Task.TASK_STATUS)).toLowerCase().contains(query)) {
+                        project.getString(PhoenixConstants.Task.TASK_STATUS).toLowerCase().contains(query)) {
                     return true;
                 }
             }else {
@@ -267,16 +267,8 @@ public class OverdueListAdapter extends RecyclerView.Adapter<OverdueListAdapter.
         HLObject customer = (HLObject) this.mFilteredProjectList.get(position);
 
         holder.mTaskName.setText(customer.getString(PhoenixConstants.Task.TASK_NAME));
-        holder.mTaskStatus.setText("Count: "+customer.getInteger(PhoenixConstants.Task.TASK_STATUS));
-
-        try {
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-            Date date = format.parse(customer.getString(PhoenixConstants.Task.START_DATE));
-
-            holder.mTaskDueDate.setText(new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").format(date));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        holder.mTaskStatus.setText(customer.getString(PhoenixConstants.Task.TASK_STATUS));
+        holder.mTaskDueDate.setText(customer.getString(PhoenixConstants.Task.START_DATE));
 
     }
 }

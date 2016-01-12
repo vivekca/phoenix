@@ -1,16 +1,25 @@
 package com.homelane.phoenixapp.main.project;
 
+import android.os.Bundle;
 import android.view.View;
 
+import com.hl.hlcorelib.mvp.events.HLCoreEvent;
+import com.hl.hlcorelib.mvp.events.HLEvent;
+import com.hl.hlcorelib.mvp.events.HLEventListener;
 import com.hl.hlcorelib.mvp.presenters.HLCoreFragment;
 import com.hl.hlcorelib.orm.HLObject;
+import com.hl.hlcorelib.utils.HLFragmentUtils;
+import com.homelane.phoenixapp.PhoenixConstants;
+import com.homelane.phoenixapp.R;
+import com.homelane.phoenixapp.main.dashboard.DashboardPresenter;
+import com.homelane.phoenixapp.main.project.history.ProjectHistoryPresenter;
 
 import java.util.ArrayList;
 
 /**
  * Created by hl0395 on 16/12/15.
  */
-public class ProjectPresenter extends HLCoreFragment<ProjectView> {
+public class ProjectPresenter extends HLCoreFragment<ProjectView> implements HLEventListener {
 
     ProjectListAdapter mProjectListAdapter;
 
@@ -33,6 +42,24 @@ public class ProjectPresenter extends HLCoreFragment<ProjectView> {
             mView.mProjectList.setVisibility(View.GONE);
             mView.mErrorText.setVisibility(View.VISIBLE);
             mView.mErrorText.setText("No projects found.");
+        }
+
+        if(!hasEventListener(PhoenixConstants.NAVIGATE_TO_PROJECT_DETAILS_EVENT,this))
+            addEventListener(PhoenixConstants.NAVIGATE_TO_PROJECT_DETAILS_EVENT,this);
+    }
+
+    @Override
+    public void onEvent(HLEvent hlEvent) {
+        HLCoreEvent e = (HLCoreEvent)hlEvent;
+        Bundle bundle=e.getmExtra();
+
+        if(e.getType().equals(PhoenixConstants.NAVIGATE_TO_PROJECT_DETAILS_EVENT)){
+            HLFragmentUtils.HLFragmentTransaction transaction =
+                    new HLFragmentUtils.HLFragmentTransaction();
+            transaction.mFrameId = R.id.fragment_frame;
+            transaction.mFragmentClass = ProjectHistoryPresenter.class;
+            transaction.mParameters = bundle;
+            push(transaction);
         }
 
     }

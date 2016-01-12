@@ -12,6 +12,7 @@
     <string name="action_search">Search</string>
     <string name="action_filter">Filter</string>
     <integer name="db_version">1</integer>
+    <string name="db_name">MobilePhoenixDB</string>
 
     <!-- Splash Activity -->
     <string name="phoenix_txt">MOBILE PHOENIX</string>

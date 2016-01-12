@@ -5,7 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/HLCoreLib-release/HLCoreLib-release.iml" filepath="$PROJECT_DIR$/HLCoreLib-release/HLCoreLib-release.iml" />
       <module fileurl="file://$PROJECT_DIR$/PhoenixApp.iml" filepath="$PROJECT_DIR$/PhoenixApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/phoenix.iml" filepath="$PROJECT_DIR$/phoenix.iml" />
     </modules>
   </component>
 </project>

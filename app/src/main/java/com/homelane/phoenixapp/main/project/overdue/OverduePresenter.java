@@ -21,7 +21,10 @@ import com.homelane.phoenixapp.R;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by hl0395 on 23/12/15.
@@ -96,8 +99,13 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> {
 
                             HLObject hlTask = new HLObject(PhoenixConstants.Task.TASK_NAME);
                             hlTask.put(PhoenixConstants.Task.TASK_NAME, task.getString("taskname"));
-                            hlTask.put(PhoenixConstants.Task.TASK_STATUS, task.getInt("count"));
-                            hlTask.put(PhoenixConstants.Task.START_DATE, jsonObject.getString("todate"));
+                            hlTask.put(PhoenixConstants.Task.TASK_STATUS, "Count: "+task.getInt("count"));
+
+                            DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                            Date date = format.parse(jsonObject.getString("todate"));
+
+                            hlTask.put(PhoenixConstants.Task.START_DATE,
+                                    new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").format(date));
                             taskList.add(hlTask);
                         }
 
@@ -139,11 +147,11 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> {
     public void filterList(HLObject filterObj){
         if(filterObj != null) {
             if (!filterObj.getString(PhoenixConstants.Task.START_DATE).equals(getString(R.string.select_date)) &&
-                    !filterObj.getString(PhoenixConstants.Task.TO_DATE).equals(getString(R.string.select_date))) {
+                    !filterObj.getString(PhoenixConstants.Task.COMPLETED_DATE).equals(getString(R.string.select_date))) {
 
                 String status = filterObj.getString(PhoenixConstants.Task.TASK_STATUS) + "/" +
                         filterObj.getString(PhoenixConstants.Task.START_DATE) + "/" +
-                        filterObj.getString(PhoenixConstants.Task.TO_DATE);
+                        filterObj.getString(PhoenixConstants.Task.COMPLETED_DATE);
                 this.mOverDueListAdapter.getFilter().filter(status);
             } else {
                 String status = filterObj.getString(PhoenixConstants.Task.TASK_STATUS) + "/";
@@ -163,7 +171,6 @@ public class OverduePresenter extends HLCoreFragment<OverdueView> {
     public void searchList(String query){
         this.mOverDueListAdapter.getFilter().filter(
                 query);
-
     }
 
     @Override

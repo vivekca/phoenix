@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+    android:id="@+id/task_layout"
+    android:layout_marginBottom="10dp"
+            android:background="@color/white"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/timeline_layout"
+                android:layout_width="30dp"
+                android:layout_marginLeft="10dp"
+                android:orientation="vertical"
+                android:layout_alignParentLeft="true"
+                android:gravity="center"
+                android:layout_height="match_parent">
+
+                <View
+                    android:background="#F0F0F0"
+                    android:layout_width="2dp"
+                    android:layout_height="20dp" />
+
+                <ImageView
+                    android:id="@+id/circle_view"
+                    android:layout_width="30dp"
+                    android:padding="5dp"
+                    android:background="@drawable/circle"
+                    android:layout_height="30dp" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:background="#F0F0F0"
+                    android:layout_height="20dp" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_toRightOf="@+id/timeline_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/task_name"
+                    android:text="Task name"
+                    android:textStyle="bold"
+                    android:textAppearance="@android:style/TextAppearance.Medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_below="@+id/task_name"
+                    android:id="@+id/task_detail"
+                    android:text="Task details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+</RelativeLayout>

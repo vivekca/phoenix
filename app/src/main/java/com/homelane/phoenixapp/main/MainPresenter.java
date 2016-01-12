@@ -84,6 +84,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
         super.onBindView();
 
         setSupportActionBar(mView.mToolbar);
+        mView.mToolbar.setTitle("Mobile Phoenix");
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mView.mDrawerLayout, mView.mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -129,7 +130,6 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
 
         if(!hasEventListener(PhoenixConstants.UPDATE_STATUS_EVENT,this))
             addEventListener(PhoenixConstants.UPDATE_STATUS_EVENT,this);
-
 
         setNavigationItemSelection(1);
 
@@ -316,7 +316,7 @@ public class MainPresenter extends HLCoreActivityPresenter<MainView>
                 HLObject task = new HLObject(PhoenixConstants.Task.TASK_NAME);
                 task.put(PhoenixConstants.Task.TASK_STATUS, mSelectedStatus);
                 task.put(PhoenixConstants.Task.START_DATE, (String) mFromDate.getText());
-                task.put(PhoenixConstants.Task.TO_DATE, (String) mToDate.getText());
+                task.put(PhoenixConstants.Task.COMPLETED_DATE, (String) mToDate.getText());
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(PhoenixConstants.Task.FILTER, task);
 

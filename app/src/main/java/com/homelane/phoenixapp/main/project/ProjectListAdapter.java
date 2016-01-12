@@ -1,5 +1,7 @@
 package com.homelane.phoenixapp.main.project;
 
+import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,8 @@ import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.hl.hlcorelib.mvp.events.HLCoreEvent;
+import com.hl.hlcorelib.mvp.events.HLEventDispatcher;
 import com.hl.hlcorelib.orm.HLObject;
 import com.homelane.phoenixapp.PhoenixConstants;
 import com.homelane.phoenixapp.R;
@@ -84,7 +88,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
      * ViewHolder class loads the views for the Recyler view item.
      */
     public static class ViewHolder extends RecyclerView.ViewHolder{
-
+        public CardView mCustomerCard;
         public TextView mCustomerName;
         public TextView mCustomerEmail;
         public TextView mCustomerMobile;
@@ -95,6 +99,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
          */
         public ViewHolder(View itemView) {
             super(itemView);
+            mCustomerCard = (CardView)itemView.findViewById(R.id.customer_card);
             mCustomerName = (TextView)itemView.findViewById(R.id.customer_name);
             mCustomerEmail = (TextView)itemView.findViewById(R.id.customer_email);
             mCustomerMobile = (TextView)itemView.findViewById(R.id.customer_mobile);
@@ -182,21 +187,27 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
      */
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        HLObject customer = (HLObject) this.mFilteredProjectList.get(position);
+        final HLObject customer = (HLObject) this.mFilteredProjectList.get(position);
 
         holder.mCustomerName.setText(customer.getString(PhoenixConstants.Project.PROJECT_NAME));
         holder.mCustomerEmail.setText(customer.getString(PhoenixConstants.Project.PROJECT_LOCATION));
         holder.mCustomerMobile.setText(customer.getString(PhoenixConstants.Project.PROJECT_STATE));
         holder.mCustomerStatus.setText(customer.getString(PhoenixConstants.Project.PROJECT_STATUS));
 
-//        holder.mDesignerName.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                HLCoreEvent event = new HLCoreEvent(PhoenixConstants.NAVIGATE_TO_CUSTOMER_DASHBOARD_EVENT,
-//                        null);
-//                HLEventDispatcher.acquire().dispatchEvent(event);
-//
-//            }
-//        });
+        holder.mCustomerCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Bundle bundle = new Bundle();
+                bundle.putString("ID",customer.getString(PhoenixConstants.Project.PROJECT_ID));
+                bundle.putString("ProjectName",customer.getString(PhoenixConstants.Project.PROJECT_NAME));
+
+
+                HLCoreEvent event = new HLCoreEvent(PhoenixConstants.NAVIGATE_TO_PROJECT_DETAILS_EVENT,
+                        bundle);
+                HLEventDispatcher.acquire().dispatchEvent(event);
+
+            }
+        });
     }
 }
