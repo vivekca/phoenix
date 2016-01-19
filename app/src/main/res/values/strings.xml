@@ -3,7 +3,7 @@
 
     <!-- Server Client ID.  This should be a valid Web OAuth 2.0 Client ID obtained
          from https://console.developers.google.com/ -->
-    <string name="server_client_id">687689620223-gpnv8kln7m0m055umlc0rbu59vmk6hpa.apps.googleusercontent.com</string>
+    <string name="server_client_id">467369549435-bs39t5u003rsrtlnr8elu5t4lcc1kp51.apps.googleusercontent.com</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

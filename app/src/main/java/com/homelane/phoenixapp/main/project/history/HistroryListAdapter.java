@@ -18,6 +18,8 @@ import com.homelane.phoenixapp.R;
 import com.homelane.phoenixapp.main.MainPresenter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 
 /**
  * Created by hl0395 on 21/12/15.
@@ -30,11 +32,15 @@ public class HistroryListAdapter extends RecyclerView.Adapter<HistroryListAdapte
      */
     private ArrayList<HLObject> mDataSet;
 
+    Hashtable<Integer,Integer> mPosition = new Hashtable<>();
+    int groupPosition = 0;
+    HashMap<Integer, ArrayList<View>> mList = new HashMap<>();
+    ArrayList<View> mStates = new ArrayList<>();
 
     /**
      * ViewHolder class loads the views for the Recyler view item.
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder{
 
         public TextView mTaskName;
         public TextView mTaskDuration;
@@ -47,6 +53,7 @@ public class HistroryListAdapter extends RecyclerView.Adapter<HistroryListAdapte
         public TextView mStateName;
         public LinearLayout mStateLayout;
 
+
         /**
          * @param itemView
          */
@@ -57,15 +64,20 @@ public class HistroryListAdapter extends RecyclerView.Adapter<HistroryListAdapte
                 mTaskDuration = (TextView) itemView.findViewById(R.id.task_detail);
                 mCircleView = (ImageView) itemView.findViewById(R.id.circle_view);
                 mTaskLayout = (RelativeLayout) itemView.findViewById(R.id.task_layout);
+
             }else {
+
                 mStartDate = (TextView) itemView.findViewById(R.id.from_date);
                 mCompleteDate = (TextView) itemView.findViewById(R.id.to_date);
                 mStatusView = (View) itemView.findViewById(R.id.status_view);
                 mStateName = (TextView) itemView.findViewById(R.id.name);
                 mStateLayout = (LinearLayout) itemView.findViewById(R.id.state_layout);
+                mStates.add(mStateLayout);
             }
         }
     }
+
+
 
     /**
      * getter function for mDataSet
@@ -174,10 +186,10 @@ public class HistroryListAdapter extends RecyclerView.Adapter<HistroryListAdapte
             holder.mTaskLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    if (holder.mStateLayout.getVisibility() == View.VISIBLE) {
-//                        collapse(holder.mStateLayout);
-//                    } else
-//                        expand(holder.mStateLayout);
+                    if (holder.mStateLayout.getVisibility() == View.VISIBLE) {
+                        collapse(holder.mStateLayout);
+                    } else
+                        expand(holder.mStateLayout);
 
                 }
             });
@@ -186,12 +198,12 @@ public class HistroryListAdapter extends RecyclerView.Adapter<HistroryListAdapte
 //
 //        for (HLObject state : states) {
 
-            holder.mStateLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    collapse(holder.mStateLayout);
-                }
-            });
+//            holder.mStateLayout.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    collapse(holder.mStateLayout);
+//                }
+//            });
 
             holder.mStartDate.setText(task.getString(PhoenixConstants.State.STATE_START_DATE));
             holder.mCompleteDate.setText(task.getString(PhoenixConstants.State.STATE_COMPLETED_DATE));

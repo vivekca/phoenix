@@ -77,11 +77,22 @@
 
     </RelativeLayout>
 
+    <ExpandableListView
+        android:layout_below="@+id/topPanel"
+        android:id="@+id/task_list"
+        android:background="#F0F0F0"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:groupIndicator="@android:color/transparent"
+        android:layout_width="match_parent"/>
+
+<!--
     <android.support.v7.widget.RecyclerView
         android:layout_below="@+id/topPanel"
         android:id="@+id/task_list"
         android:background="#F0F0F0"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+-->
 
 </RelativeLayout>

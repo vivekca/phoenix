@@ -21,6 +21,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by hl0395 on 16/12/15.
@@ -31,8 +33,11 @@ public class ProjectHistoryPresenter extends HLCoreFragment<ProjectHistoryView> 
      * RequestQueue for volley
      */
     RequestQueue volleyReqQueue;
-    HistroryListAdapter histroryListAdapter;
+//    HistroryListAdapter histroryListAdapter;
     ArrayList<HLObject> taskList = new ArrayList<HLObject>();
+    ExpandableListAdapter listAdapter;
+    List<HLObject> listDataHeader;
+    HashMap<Integer, List<HLObject>> listDataChild;
 
     @Override
     protected void onBindView() {
@@ -55,8 +60,8 @@ public class ProjectHistoryPresenter extends HLCoreFragment<ProjectHistoryView> 
 
         mView.mProjectName.setText(getArguments().getString("ProjectName"));
 
-        histroryListAdapter = new HistroryListAdapter();
-        mView.mTaskList.setAdapter(histroryListAdapter);
+//        histroryListAdapter = new HistroryListAdapter();
+//        mView.mTaskList.setAdapter(histroryListAdapter);
 
     }
 
@@ -74,6 +79,9 @@ public class ProjectHistoryPresenter extends HLCoreFragment<ProjectHistoryView> 
             @Override
             public void onResponse(String response) {
                 try {
+                    listDataHeader = new ArrayList<HLObject>();
+                    listDataChild = new HashMap<Integer, List<HLObject>>();
+
                     JSONArray jsonArray = new JSONArray(response);
 
 
@@ -86,9 +94,10 @@ public class ProjectHistoryPresenter extends HLCoreFragment<ProjectHistoryView> 
                         taskObj.put(PhoenixConstants.Task.START_DATE, task.getString("taskStartTime"));
                         taskObj.put(PhoenixConstants.Task.COMPLETED_DATE, task.getString("taskCompleteTime"));
                         taskObj.put("Type", 0);
-                        if(taskObj.save())
-                            taskList.add(taskObj);
-
+                        if(taskObj.save()) {
+//                            taskList.add(taskObj);
+                            listDataHeader.add(taskObj);
+                        }
                         JSONArray states = task.getJSONArray("states");
                         ArrayList<HLObject> stateList = new ArrayList<HLObject>();
 
@@ -102,14 +111,22 @@ public class ProjectHistoryPresenter extends HLCoreFragment<ProjectHistoryView> 
                             stateObj.put(PhoenixConstants.State.STATE_COMPLETED_DATE, state.getString("stateCompleteTime"));
                             stateObj.put("Type", 1);
 
-                            if(stateObj.save())
-                                taskList.add(stateObj);
+                            if(stateObj.save()) {
+//                                taskList.add(stateObj);
+                                stateList.add(stateObj);
+                            }
                         }
-//                        taskObj.put(PhoenixConstants.Task.TASK_ID, stateList);
+                        listDataChild.put(i ,stateList);
+
                     }
 
-                    histroryListAdapter.setmDataSet(taskList);
-                    histroryListAdapter.notifyDataSetChanged();
+//                    histroryListAdapter.setmDataSet(taskList);
+//                    histroryListAdapter.notifyDataSetChanged();
+
+                    listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
+
+                    // setting list adapter
+                    mView.mTaskList.setAdapter(listAdapter);
 
                 }catch (Exception e){
                     e.printStackTrace();

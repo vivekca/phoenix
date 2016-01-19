@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:paddingLeft="10dp"
     android:layout_marginLeft="20dp"
+    android:animateLayoutChanges="true"
     android:id="@+id/state_layout"
     android:visibility="visible"
     android:paddingRight="10dp"

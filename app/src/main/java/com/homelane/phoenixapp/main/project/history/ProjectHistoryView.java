@@ -1,6 +1,7 @@
 package com.homelane.phoenixapp.main.project.history;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.view.animation.TranslateAnimation;
+import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -24,7 +26,8 @@ import com.homelane.phoenixapp.R;
 public class ProjectHistoryView implements HLView {
 
     private View mView;
-    public RecyclerView mTaskList;
+//    public RecyclerView mTaskList;
+    public ExpandableListView mTaskList;
     public TextView mProjectName;
 
     /**
@@ -68,6 +71,7 @@ public class ProjectHistoryView implements HLView {
     public void onSavedInstanceState(Bundle savedInstanceState) {
 
     }
+    int previousGroup=-1;
 
     /**
      * Create the view from the id provided
@@ -78,10 +82,10 @@ public class ProjectHistoryView implements HLView {
     @Override
     public void init(LayoutInflater inflater, ViewGroup parent) {
         mView = inflater.inflate(R.layout.project_task_layout, parent, false);
-        mTaskList = (RecyclerView) mView.findViewById(R.id.task_list);
-        mTaskList.setHasFixedSize(true);
-        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(inflater.getContext());
-        mTaskList.setLayoutManager(mLayoutManager);
+        mTaskList = (ExpandableListView) mView.findViewById(R.id.task_list);
+//        mTaskList.setHasFixedSize(true);
+//        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(inflater.getContext());
+//        mTaskList.setLayoutManager(mLayoutManager);
         mProjectName = (TextView) mView.findViewById(R.id.project_name);
 
         final LinearLayout linearLayout = (LinearLayout) mView.findViewById(R.id.collapse_layout);
@@ -94,6 +98,20 @@ public class ProjectHistoryView implements HLView {
                 else
                     expand(linearLayout);
 
+            }
+        });
+
+        mTaskList.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                // We call collapseGroupWithAnimation(int) and
+                // expandGroupWithAnimation(int) to animate group
+                // expansion/collapse.
+                if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                    return parent.expandGroup(groupPosition, true);
+                }else
+
+                return true;
             }
         });
 
