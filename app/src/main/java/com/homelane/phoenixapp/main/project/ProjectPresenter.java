@@ -78,8 +78,7 @@ public class ProjectPresenter extends HLCoreFragment<ProjectView> implements HLE
 
     public void searchList(String query){
 
-        this.mProjectListAdapter.getFilter().filter(
-                query);
+        this.mProjectListAdapter.getFilter().filter(query);
 
     }
 
